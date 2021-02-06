@@ -5,7 +5,10 @@ import math
 # Structure of beachline is defined in the following manner: Point, Parabola, Point, Parabola, Point, ... , Point, Parabola, Point
 class BeachLine:
     def __init__(self):
-        pass
+        self.list = []
+
+    def insert(self, _index, _newElement):
+        self.list.insert(_index, _newElement)
 
 class QueueItem:
     def __init__(self, _position, _type):
@@ -17,12 +20,15 @@ class QueueItemType(Enum):
     VERTEXEVENT = 2
 
 class Parabola:
-    def __init__(self, _focus, _directrix):
+    def __init__(self, _focus, _directrix, _min, _max):
         self.focus = _focus
         self.directrix = _directrix
+        self.range = (_min, _max)
 
-    def Split(self):
-        return []
+    # Get the x value of a parabola given the y value
+    # Note that x has to be bounded withn the range
+    def GetYValue(self, _x):
+        pass
 
 class VoronoiGenerator:
     Voronoi = namedtuple("Points", "Edges")
@@ -41,23 +47,29 @@ class VoronoiGenerator:
 
             if event is QueueItemType.POINTEVENT:
                 # Get closest parabola
-                closestParabola = self.GetClosestParabola(beachLine, event.position)
+                closestParabola, index = self.GetClosestParabola(beachLine, event.position)
                 # Split it into half and then create a new parabola in between
                 newParabola = Parabola(event.position, sweepLine)
+                beachLine.insert(newParabola)
 
                 pass
             elif event is QueueItemType.VERTEXEVENT:
+                # Get the parabola that has been deleted
+                parabola = None
+                vertices.append(parabola.focus)
                 pass
 
         return None
 
     def GetClosestParabola(self, _beachLine, _point):
         parabola = _beachLine[0]
-        for p in _beachLine:
-            if self.EuclideanDistance(_point, p) < self.EuclideanDistance(_point, parabola):
-                parabola = p
+        index = 0
+        for i in range(0, len(_beachLine)):
+            if self.EuclideanDistance(_point, _beachLine[i]) < self.EuclideanDistance(_point, parabola):
+                parabola = _beachLine[i]
+                index = i
 
-        return parabola
+        return parabola, index
 
     def EuclideanDistance(self, _pointA, _pointB):
         return math.sqrt((_pointA.x - _pointB.x) ^ 2 + (_pointA.y - _pointB.y) ^ 2)
