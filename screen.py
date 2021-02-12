@@ -5,13 +5,7 @@ from room import Room
 class Screen:
     def __init__(self):
         pygame.display.init()
-        self.objects = [Room(
-            _left = 10,
-            _top = 10,
-            _width = 200,
-            _height = 200,
-            _thickness = 10
-        )]
+        self.objects = []
         self.complete = False
         self.clock = pygame.time.Clock()
     
