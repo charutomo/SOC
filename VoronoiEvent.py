@@ -20,14 +20,14 @@ class VoronoiEvent:
 
 class SiteEvent(VoronoiEvent):
     def __init__(self, _position : (float, float)):
-        super.__init__(_position, EventType.SITEEVENT)
+        super().__init__(_position, EventType.SITEEVENT)
     
     def HandleEvent(self, _sweepLineHeight : float):
         return Parabola(self.position, _sweepLineHeight)
 
 class CircleEvent(VoronoiEvent):
     def __init__(self, _position : (float, float)):
-        super.__init__(_position, EventType.VERTEXEVENT)
+        super().__init__(_position, EventType.VERTEXEVENT)
 
     def HandleEvent(self):
         pass
