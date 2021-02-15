@@ -1,6 +1,7 @@
 import pygame
-from VoronoiEvent import *
+import random
 from screen import Screen
+from voronoi import VoronoiGenerator
 
 # Note that this is a linting error not a program error
 # pylint: disable=no-member
@@ -8,27 +9,22 @@ from screen import Screen
 def main():
     print("Main")
 
-    sweepLine = 0.0
-    points = [(10, 9), (100, 200), (50, 87), (150, 27)]
-    queue = []
-
+    length = 5
+    points = [None] * length
+    for i in range(len(points)):
+        points[i] = (random.random() * 640, random.random() * 480)
     points.sort(key=lambda p: p[1])
-
-    for p in points:
-        queue.append(SiteEvent(p))
     
-    while len(queue) > 0:
-        event = queue.pop()
-        
-        if event.type is EventType.SITEEVENT:
-            event.HandleEvent(sweepLine)
-        elif event.type is EventType.VERTEXEVENT:
-            event.HandleEvent()
+    voronoiGenerator = VoronoiGenerator()
+    beachLine = voronoiGenerator.GenerateVoronoi(points)
 
-    #pygame.init()
-    #screen = Screen()
-    #screen.Display(640, 480)
-    #screen.Update()
+    pygame.init()
+    screen = Screen()
+    for b in beachLine:
+        screen.debugPoints.append(b.focus)
+    screen.parabolas = beachLine
+    screen.Display(640, 480)
+    screen.Update()
     
 if __name__ == "__main__":
     main()

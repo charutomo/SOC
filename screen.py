@@ -5,6 +5,8 @@ from room import Room
 class Screen:
     def __init__(self):
         pygame.display.init()
+        self.debugPoints = []
+        self.parabolas = []
         self.objects = []
         self.complete = False
         self.clock = pygame.time.Clock()
@@ -16,6 +18,13 @@ class Screen:
     def Draw(self):
         for o in self.objects:
             o.Draw(pygame.display.get_surface())
+        for o in self.debugPoints:
+            pygame.draw.ellipse(
+                pygame.display.get_surface(),
+                pygame.Color(255, 0, 0),
+                pygame.Rect(o[0], o[1], 4.0, 4.0))
+        for p in self.parabolas:
+            p.Draw(pygame.display.get_surface(), 1000, 0.25)
         pygame.display.update()
 
     def Update(self):

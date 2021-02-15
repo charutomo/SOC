@@ -4,16 +4,6 @@ import math
 import pygame
 
 # Structure of beachline is defined in the following manner: Point, Parabola, Point, Parabola, Point, ... , Point, Parabola, Point
-class BeachLine:
-    def __init__(self):
-        self.list = []
-
-    def insert(self, _index, _newElement):
-        self.list.insert(_index, _newElement)
-
-    def append(self, _newElement):
-        self.list.append(_newElement)
-
 class VoronoiDiagram:
     def __init__(self, _vertices, _edges):
         self.vertices = []
@@ -21,30 +11,42 @@ class VoronoiDiagram:
 
 class VoronoiGenerator:
     def GenerateVoronoi(self, _points):
-        sweepLine = None
-        beachLine = BeachLine()
-        parabolas = []
-        vertices = []
-        edges = []
+        sweepLine = 0.0
         queue = []
+        beachLine = []
+
         for p in _points:
             queue.append(SiteEvent(p))
-
+        
         while len(queue) > 0:
             event = queue.pop()
+            sweepLine = event.position[1]
             
             if event.type is EventType.SITEEVENT:
-                event.HandleEvent(sweepLine)
+                newParabola = event.HandleEvent(sweepLine)
+
+                if len(beachLine) > 0:
+                    closestParabola, index = self.GetClosestParabola(beachLine, event.position)
+                    beachLine.insert(index, newParabola)
+                    if index != 0 and index != len(beachLine) - 1:
+                        beachLine.insert(index, closestParabola)
+                    pass
+                else:
+                    beachLine.append(newParabola)
+                
+                # Create Circumcircle
+
             elif event.type is EventType.VERTEXEVENT:
                 event.HandleEvent()
 
-        return VoronoiDiagram(vertices, edges)
+        
+        return beachLine
 
     def GetClosestParabola(self, _beachLine, _point):
         parabola = _beachLine[0]
         index = 0
         for i in range(0, len(_beachLine)):
-            if self.EuclideanDistance(_point, _beachLine[i]) < self.EuclideanDistance(_point, parabola):
+            if _beachLine[i].GetYValue(_point[0]) > parabola.GetYValue(_point[0]):
                 parabola = _beachLine[i]
                 index = i
 
