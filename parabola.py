@@ -1,28 +1,25 @@
 import math
 import pygame
+from vector import Vector
 
 class Parabola:
-    def __init__(self, _focus, _directrix):
+    def __init__(self, _focus: Vector):
         self.focus = _focus
-        self.directrix = _directrix
-        self.origin = self.focus[1] - self.directrix
 
-    # Get the x value of a parabola given the y value
-    # Note that x has to be bounded withn the range
-    def GetYValue(self, _x):
-        return (math.pow(_x - self.focus[0], 2) + self.focus[1])
+    def GetYValue(self, _x: float, _directrix: float):
+        return (-math.pow(_x - self.focus.x, 2) / 4 * _directrix + self.focus.y)
 
-    def Draw(self, _surface, _resolution, _increment):
-        xPos = self.focus[0] - (math.floor(_resolution / 2) * _increment)
+    def Draw(self, _surface: pygame.surface.Surface, _resolution: int, _increment: float, _directrix: float):
+        xPos = self.focus.x - (math.floor(_resolution / 2) * _increment)
         for i in range(_resolution):
             pygame.draw.line(
                 _surface,
                 pygame.Color(255, 0, 0),
-                (xPos, self.GetYValue(xPos)),
-                (xPos + _increment, self.GetYValue(xPos + _increment)))
+                (xPos, self.GetYValue(xPos, _directrix)),
+                (xPos + _increment, self.GetYValue(xPos + _increment, _directrix)))
             xPos += _increment
 
     def Print(self):
-        print("Focus: " + str(self.focus) + ", Directrix: " + str(self.directrix))
+        print("Focus: " + str(self.focus))
 
     

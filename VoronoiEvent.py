@@ -1,5 +1,6 @@
 from enum import Enum
 from parabola import Parabola
+from vector import Vector
 
 class EventType(Enum):
     SITEEVENT = 1
@@ -11,22 +12,22 @@ class EventType(Enum):
 # More than 1 circle can be formed
 
 class VoronoiEvent:
-    def __init__(self, _position : (float, float), _type : EventType):
-        self.position = _position
-        self.type = _type
+    def __init__(self, _position: Vector, _type: EventType):
+        self.position: Vector = _position
+        self.type: EventType = _type
     
     def HandleEvent(self):
         pass
 
 class SiteEvent(VoronoiEvent):
-    def __init__(self, _position : (float, float)):
+    def __init__(self, _position: Vector):
         super().__init__(_position, EventType.SITEEVENT)
     
-    def HandleEvent(self, _sweepLineHeight : float):
-        return Parabola(self.position, _sweepLineHeight)
+    def HandleEvent(self):
+        return Parabola(self.position)
 
 class CircleEvent(VoronoiEvent):
-    def __init__(self, _position : (float, float)):
+    def __init__(self, _position: Vector):
         super().__init__(_position, EventType.VERTEXEVENT)
 
     def HandleEvent(self):
