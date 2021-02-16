@@ -55,6 +55,16 @@ class Circumcircle:
 
         self.lowestPoint = Vector(self.midpoint.x, self.midpoint.y + r)
     
+    def InCircle(self, _point: Vector):
+        return self.midpoint.EuclideanDistance(_point) <= self.radius
+
+    def NoneInCircle(self, _points: [Vector]):
+        for p in _points:
+            if p != self.a and p != self.b and p != self.c and self.InCircle(p):
+                return False
+        
+        return True
+
     def Draw(self, _surface: pygame.surface.Surface, _color: pygame.Color = pygame.Color(0, 255, 0), _ellipseBox: Vector = Vector(4.0, 4.0), _circleBorderWidth: int = 1):
         pygame.draw.ellipse(
             pygame.display.get_surface(),

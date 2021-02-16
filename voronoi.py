@@ -13,12 +13,15 @@ class VoronoiDiagram:
 class VoronoiGenerator:
     def __init__(self):
         self.sweepLine: float = 0.0
-        self.queue = []
-        self.beachLine = []
-        self.circumcircles = []
-        self.vertices = []
+        self.points: [Vector] = []
+        self.queue: [VoronoiEvent] = []
+        self.beachLine: [Parabola] = []
+        self.circumcircles: [Circumcircle] = []
+        self.vertices: [Vector] = []
 
     def GenerateVoronoi(self, _points: [Vector]):
+        self.points = _points
+
         for p in _points:
             self.queue.append(SiteEvent(p))
         
@@ -79,5 +82,7 @@ class VoronoiGenerator:
         else:
             newCircumcircle = Circumcircle(_vectorA, _vectorB, _vectorC)
             newCircumcircle.Generate()
+
+            if newCircumcircle.lowestPoint.y > self.sweepLine and newCircumcircle.NoneInCircle(self.points):
+                self.queue.append(CircleEvent(newCircumcircle))
             self.circumcircles.append(newCircumcircle)
-            self.queue.append(CircleEvent(newCircumcircle))
