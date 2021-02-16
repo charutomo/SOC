@@ -6,12 +6,13 @@ Created on Sat Feb 13 20:04:51 2021
 """
 
 class Queue:
-    def __init__(self,data):
+    def __init__(self, data):
         self.front = None
         self.rear = None
-        self.size = 6
         self.list = data
-    def enqueue(self,element):
+        self.size = len(self.list)
+    
+    def enqueue(self, element):
         '''
         enqueue elements at the rear of the list
 
@@ -32,11 +33,13 @@ class Queue:
         if self.list == None:
             self.list = [element]
         else:
-                self.list.append(element)
+            self.list.append(element)
+
+        self.size = len(self.list)
        
-    def dequeue(self,num):
+    def dequeue(self, num):
         '''
-        dequeues the first few element depending on the specific input from the queue
+        dequeues the num elements depending on the specific input from the queue
 
         Parameters
         ----------
@@ -54,6 +57,17 @@ class Queue:
             self.front += num
             for x in range(num):
                 self.list.pop(0)
+        
+        self.size = len(self.list)
+    
+    def pop(self):
+        if (self.front == None) and (self.rear == None):
+            return print("Error Occurred, no element in queue to pop please try again.")
+        else:
+            return self.list.pop(0)
+
+        self.size = len(self.list)
+    
     def printQueue(self):
         print(self.list)
         
