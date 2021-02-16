@@ -1,14 +1,16 @@
 import pygame
 from vector import Vector
+from parabola import Parabola
 
 class Circumcircle:
-    def __init__(self, _a: Vector, _b: Vector, _c: Vector):
-        self.a = _a
-        self.b = _b
-        self.c = _c
-        self.midpoint = None
-        self.radius = None
-        self.lowestPoint = None
+    def __init__(self, _generatingParabolaReceipt: int, _a: Vector, _b: Vector, _c: Vector):
+        self.generatingParabolaReceipt = _generatingParabolaReceipt
+        self.a: Vector = _a
+        self.b: Vector = _b
+        self.c: Vector = _c
+        self.midpoint: Vector = None
+        self.radius: float = None
+        self.lowestPoint: Vector = None
         
     def Generate(self):
         '''
@@ -56,7 +58,8 @@ class Circumcircle:
         self.lowestPoint = Vector(self.midpoint.x, self.midpoint.y + r)
     
     def InCircle(self, _point: Vector):
-        return self.midpoint.EuclideanDistance(_point) <= self.radius
+        dist = self.midpoint.EuclideanDistance(_point)
+        return dist <= self.radius
 
     def NoneInCircle(self, _points: [Vector]):
         for p in _points:

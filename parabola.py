@@ -1,5 +1,6 @@
 import math
 import pygame
+import Settings
 from vector import Vector
 
 class Parabola:

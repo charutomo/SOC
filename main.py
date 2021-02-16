@@ -8,7 +8,6 @@ import Settings
 # Note that this is a linting error not a program error
 # pylint: disable=no-member
 
-
 def GenerateRandomPoints(_length: int):
     points: [Vector] = [Vector] * _length
     for i in range(len(points)):
@@ -20,19 +19,19 @@ def GenerateRandomPoints(_length: int):
 def main():
     print("Main")
 
-    points: [Vector] = GenerateRandomPoints(Settings.NUMBER_OF_POINTS)
+    points = GenerateRandomPoints(Settings.NUMBER_OF_POINTS)
     points.sort(key=lambda p: p.y)
-    
+
     voronoiGenerator = VoronoiGenerator()
-    beachLine, sweepLine, circumcircles, vertices = voronoiGenerator.GenerateVoronoi(points)
+    beachLine, sweepLine, circumcircles, consideredCircumcircles, vertices = voronoiGenerator.GenerateVoronoi(points)
 
     pygame.init()
     screen = Screen()
-    for b in beachLine:
-        screen.debugPoints.append(b.focus)
     screen.parabolas = beachLine
+    screen.debugPoints = points
     screen.sweepLine = sweepLine
     screen.circumcircles = circumcircles
+    screen.consideredCircumcircles = consideredCircumcircles
     screen.vertices = vertices
     screen.Display(Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT)
     screen.Update()

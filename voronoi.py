@@ -1,6 +1,7 @@
 import math
 import pygame
 from vector import Vector
+from beachLine import BeachLine
 from VoronoiEvent import *
 from circumcircle import Circumcircle
 
@@ -13,16 +14,17 @@ class VoronoiDiagram:
 class VoronoiGenerator:
     def __init__(self):
         self.sweepLine: float = 0.0
-        self.points: [Vector] = []
+        self.pointsToConsider: [Vector] = []
         self.queue: [VoronoiEvent] = []
-        self.beachLine: [Parabola] = []
+        self.beachLine: BeachLine = BeachLine()
         self.circumcircles: [Circumcircle] = []
+        self.consideredCircumcircles: [Circumcircle] = []
         self.vertices: [Vector] = []
 
     def GenerateVoronoi(self, _points: [Vector]):
-        self.points = _points
+        self.pointsToConsider = _points.copy()
 
-        for p in _points:
+        for p in self.pointsToConsider:
             self.queue.append(SiteEvent(p))
         
         while len(self.queue) > 0:
@@ -32,57 +34,63 @@ class VoronoiGenerator:
             if event.type is EventType.SITEEVENT:
                 newParabola = event.HandleEvent()
 
-                if len(self.beachLine) > 0:
+                for p in self.pointsToConsider:
+                    if event.position == p:
+                        self.pointsToConsider.remove(p)
+                        break 
+
+                if len(self.beachLine.beachLineContainer) > 0:
                     closestParabola, index = self.GetClosestParabola(self.beachLine, self.sweepLine, event.position)
-                    self.beachLine.insert(index, newParabola)
-                    if index != 0 and index != len(self.beachLine) - 1:
-                        self.beachLine.insert(index, closestParabola)
+                    newParabolaReceipt = self.beachLine.Insert(index, newParabola)
+                    closestParabolaReceipt = self.beachLine.Insert(index, closestParabola)
                     
                     # Create Circumcircles
                     if index - 2 >= 0:
                         self.GenerateCircumcircle(
-                            self.beachLine[index - 2].focus,
-                            self.beachLine[index - 1].focus,
-                            self.beachLine[index].focus)
-                    if index - 1 >= 0 and index + 1 < len(self.beachLine):
+                            newParabolaReceipt,
+                            self.beachLine.beachLineContainer[index - 2].element.focus,
+                            self.beachLine.beachLineContainer[index - 1].element.focus,
+                            self.beachLine.beachLineContainer[index].element.focus)
+                    if index - 1 >= 0 and index + 1 < len(self.beachLine.beachLineContainer):
                         self.GenerateCircumcircle(
-                            self.beachLine[index - 1].focus,
-                            self.beachLine[index].focus,
-                            self.beachLine[index + 1].focus)
-                    if index + 2 < len(self.beachLine):
+                            newParabolaReceipt,
+                            self.beachLine.beachLineContainer[index - 1].element.focus,
+                            self.beachLine.beachLineContainer[index].element.focus,
+                            self.beachLine.beachLineContainer[index + 1].element.focus)
+                    if index + 2 < len(self.beachLine.beachLineContainer):
                         self.GenerateCircumcircle(
-                            self.beachLine[index].focus,
-                            self.beachLine[index + 1].focus,
-                            self.beachLine[index + 2].focus)
+                            newParabolaReceipt,
+                            self.beachLine.beachLineContainer[index].element.focus,
+                            self.beachLine.beachLineContainer[index + 1].element.focus,
+                            self.beachLine.beachLineContainer[index + 2].element.focus)
                 else:
-                    self.beachLine.append(newParabola)
+                    self.beachLine.Insert(0, newParabola)
 
             elif event.type is EventType.VERTEXEVENT:
-                newVertex = event.HandleEvent()
-                self.vertices.append(newVertex)
+                circumcircle: Circumcircle = event.HandleEvent()
+                self.beachLine.Remove(circumcircle.generatingParabolaReceipt)
+                self.vertices.append(circumcircle.midpoint)
 
-        for c in self.circumcircles:
-            c.Print()
+        return self.beachLine, self.sweepLine, self.circumcircles, self.consideredCircumcircles, self.vertices
 
-        return self.beachLine, self.sweepLine, self.circumcircles, self.vertices
-
-    def GetClosestParabola(self, _beachLine: [], _sweepLine: float, _point: Vector):
-        parabola: Parabola = _beachLine[0]
+    def GetClosestParabola(self, _beachLine: BeachLine, _sweepLine: float, _point: Vector):
+        parabola: Parabola = _beachLine.beachLineContainer[0].element
         index: int = 0
-        for i in range(0, len(_beachLine)):
-            if _beachLine[i].GetYValue(_point.x, _sweepLine) > parabola.GetYValue(_point.x, _sweepLine):
-                parabola = _beachLine[i]
+        for i in range(0, len(_beachLine.beachLineContainer)):
+            if _beachLine.beachLineContainer[i].element.GetYValue(_point.x, _sweepLine) > parabola.GetYValue(_point.x, _sweepLine):
+                parabola = _beachLine.beachLineContainer[i].element
                 index = i
 
         return parabola, index
 
-    def GenerateCircumcircle(self, _vectorA: Vector, _vectorB: Vector, _vectorC: Vector):
+    def GenerateCircumcircle(self, _generatingParabola: Parabola, _vectorA: Vector, _vectorB: Vector, _vectorC: Vector):
         if _vectorA == _vectorB or _vectorA == _vectorC or _vectorB == _vectorC:
             return
         else:
-            newCircumcircle = Circumcircle(_vectorA, _vectorB, _vectorC)
+            newCircumcircle = Circumcircle(_generatingParabola, _vectorA, _vectorB, _vectorC)
             newCircumcircle.Generate()
 
-            if newCircumcircle.lowestPoint.y > self.sweepLine and newCircumcircle.NoneInCircle(self.points):
+            if newCircumcircle.lowestPoint.y > self.sweepLine and newCircumcircle.NoneInCircle(self.pointsToConsider):
                 self.queue.append(CircleEvent(newCircumcircle))
+                self.consideredCircumcircles.append(newCircumcircle)
             self.circumcircles.append(newCircumcircle)

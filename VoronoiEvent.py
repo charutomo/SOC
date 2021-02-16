@@ -33,5 +33,5 @@ class CircleEvent(VoronoiEvent):
         self.circumcircle = _circumcircle
 
     def HandleEvent(self):
-        return self.circumcircle.midpoint
+        return self.circumcircle
 
