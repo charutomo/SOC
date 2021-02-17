@@ -8,7 +8,7 @@ import Settings
 # Note that this is a linting error not a program error
 # pylint: disable=no-member
 
-def GenerateRandomPoints(_length: int):
+def GenerateRandomPoints(_length: int): #generate list of points, parameter how vetsors you want to generate
     points: [Vector] = [Vector] * _length
     for i in range(len(points)):
         points[i] = Vector(

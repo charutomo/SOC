@@ -5,6 +5,7 @@ from vector import Vector
 from VoronoiSite import VoronoiSite
 from VoronoiEvent import *
 from circumcircle import Circumcircle
+from parabola import Parabola
 
 # Structure of beachline is defined in the following manner: Point, Parabola, Point, Parabola, Point, ... , Point, Parabola, Point
 class VoronoiDiagram:
@@ -16,9 +17,9 @@ class VoronoiGenerator:
     def __init__(self):
         self.sweepLine: float = 0.0
         self.queue: [VoronoiEvent] = []
-        self.sites: [VoronoiSite] = []
+        self.sites: [VoronoiSite] = []      # Parabolas are not actually saved. Only the factors used to create one
         self.sitesToConsider: [VoronoiSite] = []
-        self.beachLine: [VoronoiSite] = []
+        self.beachLine: [VoronoiSite] = []              # This is a list of sites not parabolas
         self.circumcircles: [Circumcircle] = []
         self.consideredCircumcircles: [Circumcircle] = []
         self.vertices: [Vector] = []
@@ -38,7 +39,7 @@ class VoronoiGenerator:
                 newSite = event.HandleEvent()
 
                 if len(self.beachLine) > 0:
-                    associatedSite, index = self.GetClosestParabola(self.beachLine, self.sweepLine, event.position)
+                    associatedSite, index = self.GetClosestParabola(self.beachLine, self.sweepLine, newSite)
                     self.beachLine.insert(index, newSite)
                     self.beachLine.insert(index, associatedSite)
 
@@ -77,12 +78,12 @@ class VoronoiGenerator:
     def GetClosestParabola(self, _beachLine: [VoronoiSite], _sweepLine: float, _site: VoronoiSite):
         parabola: Parabola = _beachLine[0]
         index: int = 0
-        for i in range(0, len(_beachLine)):
-            pass
-            #if _beachLine[i].GetYValue(_site.position.x, _sweepLine) > parabola.GetYValue(_site.position.x, _sweepLine):
-                #parabola = _beachLine[i]
-                #index = i
-
+        while index < len(_beachLine):
+            if _beachLine[index].position.y > Parabola.GetYValue(parabola, _beachLine[index].position.x,_sweepLine):
+                parabola = _beachLine[index]
+            else:
+                break
+            index+=1
         return parabola, index
 
     def GenerateCircumcircle(self, _associatedSite: VoronoiSite, _siteA: VoronoiSite, _siteB: VoronoiSite, _siteC: VoronoiSite):

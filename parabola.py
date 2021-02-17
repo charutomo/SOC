@@ -12,7 +12,23 @@ class Parabola:
 
     # Get the intersection of 2 parabolas
     def GetBreakpoint(self, _other, _sweepLine: float):
-        pass
+        '''
+        Parameters
+        ----------
+        _other : class
+            inputs of the other parabola
+        _sweepLine : float
+            the y-axis of the sweepline
+
+        Returns
+        -------
+        x, y position of the intersections of the parabola
+            
+        '''
+        for x in range(640):
+            if  self.GetYValue(x,_sweepLine) == self.GetYValue(_other.focus.x,_sweepLine):
+                return x , self.GetYValue(x,_sweepLine)
+        return ("There are no intersection between the two parabolas.")
 
     def Copy(self):
         return Parabola(self.focus)
