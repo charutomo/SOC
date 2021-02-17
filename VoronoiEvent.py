@@ -1,6 +1,7 @@
 from enum import Enum
 from parabola import Parabola
 from vector import Vector
+from VoronoiSite import VoronoiSite
 from circumcircle import Circumcircle
 
 class EventType(Enum):
@@ -21,11 +22,12 @@ class VoronoiEvent:
         pass
 
 class SiteEvent(VoronoiEvent):
-    def __init__(self, _position: Vector):
-        super().__init__(_position, EventType.SITEEVENT)
+    def __init__(self, _site: VoronoiSite):
+        super().__init__(_site.position, EventType.SITEEVENT)
+        self.site = _site
     
     def HandleEvent(self):
-        return Parabola(self.position)
+        return self.site
 
 class CircleEvent(VoronoiEvent):
     def __init__(self, _circumcircle: Circumcircle):

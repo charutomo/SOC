@@ -31,14 +31,10 @@ class Screen:
                 surface,
                 pygame.Color(255, 0, 0),
                 pygame.Rect(o.x, o.y, 4.0, 4.0))
-        """
         for p in self.parabolas:
             p.Draw(surface, 1000, 0.25, self.sweepLine)
-        """
-        """
         for c in self.circumcircles:
             c.Draw(surface)
-        """
         for c in self.consideredCircumcircles:
             c.Draw(surface, pygame.Color(0, 125, 125))
         for v in self.vertices:

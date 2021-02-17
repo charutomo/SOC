@@ -10,6 +10,13 @@ class Parabola:
     def GetYValue(self, _x: float, _directrix: float):
         return (-math.pow(_x - self.focus.x, 2) / 4 * _directrix + self.focus.y)
 
+    # Get the intersection of 2 parabolas
+    def GetBreakpoint(self, _other, _sweepLine: float):
+        pass
+
+    def Copy(self):
+        return Parabola(self.focus)
+
     def Draw(self, _surface: pygame.surface.Surface, _resolution: int, _increment: float, _directrix: float):
         xPos = self.focus.x - (math.floor(_resolution / 2) * _increment)
         for i in range(_resolution):
@@ -21,6 +28,6 @@ class Parabola:
             xPos += _increment
 
     def Print(self):
-        print("Focus: " + str(self.focus))
+        print("Focus: " + self.focus.ToString())
 
     
