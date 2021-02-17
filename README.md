@@ -1,12 +1,14 @@
 # SOC
-Space Optimization For COVID-19 Wards
+**Space Optimization For COVID-19 Wards**
 
+<br/>
 
 **Welcome!** :wave:
 
+<br/>
 
-##Introduction
-[@KieranNg](https://github.com/KieranNg) and I are Mathematical Science students from NTU under SPMS.<br/>
+## Introduction
+[@KieranNg](https://github.com/KieranNg) and I are Mathematical Science students from NTU under SPMS.
 We are working on a project for SCOPE Odyessey. We are trying to optimize a given ward space and equally divide them into subsections.<br/>
 
 
@@ -20,7 +22,7 @@ SOC
 ├─── LICENCE
 │ 
 ├─── main
-├─── Voronoi Diagram*
+├─── Voronoi Diagram
 │       ├─── Voronoi
 │       └─── Voronoi Events
 │   
@@ -38,8 +40,10 @@ SOC
 
 ```
 
+
 ## Report
 Our report will be released on later date.<br/>
+<br/>
 
 
-Thank you for viewing our code! :blush:
+**Thank you for viewing our repository!** :blush:
