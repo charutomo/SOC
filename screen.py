@@ -4,13 +4,14 @@ from parabola import Parabola
 from circumcircle import Circumcircle
 from baseObject import BaseObject
 from room import Room
+from VoronoiSite import VoronoiSite
 
 class Screen:
     def __init__(self):
         pygame.display.init()
         self.debugPoints: [Vector] = []
-        self.parabolas: [Parabola] = []
         self.sweepLine: float = None
+        self.beachLine: [VoronoiSite] = []
         self.circumcircles: [Circumcircle] = [] 
         self.consideredCircumcircles: [Circumcircle] = []
         self.vertices: [Vector] = []
@@ -31,8 +32,8 @@ class Screen:
                 surface,
                 pygame.Color(255, 0, 0),
                 pygame.Rect(o.x, o.y, 4.0, 4.0))
-        for p in self.parabolas:
-            p.Draw(surface, 1000, 0.25, self.sweepLine)
+        for b in self.beachLine:
+            b.associatedParabola.Draw(surface, 1000, 0.25, self.sweepLine)
         for c in self.circumcircles:
             c.Draw(surface)
         for c in self.consideredCircumcircles:

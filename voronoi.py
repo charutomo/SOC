@@ -16,7 +16,7 @@ class VoronoiGenerator:
     def __init__(self):
         self.sweepLine: float = 0.0
         self.queue: [VoronoiEvent] = []
-        self.sites: [VoronoiSite] = []
+        self.sites: [VoronoiSite] = []                      
         self.sitesToConsider: [VoronoiSite] = []
         self.beachLine: [VoronoiSite] = []
         self.circumcircles: [Circumcircle] = []
@@ -75,15 +75,7 @@ class VoronoiGenerator:
         return self.beachLine, self.sweepLine, self.circumcircles, self.consideredCircumcircles, self.vertices
 
     def GetClosestParabola(self, _beachLine: [VoronoiSite], _sweepLine: float, _site: VoronoiSite):
-        parabola: Parabola = _beachLine[0]
-        index: int = 0
-        for i in range(0, len(_beachLine)):
-            pass
-            #if _beachLine[i].GetYValue(_site.position.x, _sweepLine) > parabola.GetYValue(_site.position.x, _sweepLine):
-                #parabola = _beachLine[i]
-                #index = i
-
-        return parabola, index
+        return None, None
 
     def GenerateCircumcircle(self, _associatedSite: VoronoiSite, _siteA: VoronoiSite, _siteB: VoronoiSite, _siteC: VoronoiSite):
         if _siteA == _siteB or _siteA == _siteC or _siteB == _siteC:

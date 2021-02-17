@@ -12,6 +12,7 @@ class Parabola:
 
     # Get the intersection of 2 parabolas
     def GetBreakpoint(self, _other, _sweepLine: float):
+        
         pass
 
     def Copy(self):
