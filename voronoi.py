@@ -76,22 +76,34 @@ class VoronoiGenerator:
         return self.beachLine, self.sweepLine, self.circumcircles, self.consideredCircumcircles, self.vertices
 
     def GetClosestParabola(self, _beachLine: [VoronoiSite], _sweepLine: float, _site: [VoronoiSite]):
-        parabola: Parabola = Parabola(_beachLine[0])
-        dist =  parabola.position.y - Parabola.GetYValue(parabola, parabola.focus.x,_sweepLine) 
-        for index in range(len(_beachLine)):
-            if _beachLine[index].position.x ==_site.position.x:
-               if _beachLine[index].position.y - Parabola.GetYValue(parabola, _beachLine[index].position.x,_sweepLine)<dist:
-                   dist =  _beachLine[index].position.y - Parabola.GetYValue(parabola, _beachLine[index].position.x,_sweepLine)
+        '''
+        Parameters
+        ----------
+        _beachLine : [VoronoiSite]
+            the sequences of beachlines
+        _sweepLine : float
+            sweepline
+        _site : [VoronoiSite]
+            event sites
+
+        Returns
+        -------
+        _beachLine[index]: parabola
+            the parabola most adjacent to the site 
+        index : float
+            the index of beachline that has the closest proximity to site
+
+        '''
+        parabola = Parabola(_beachLine[0])
+        index = 0
+        dist =  parabola - Parabola.GetYValue(parabola,  parabola.position.x,_sweepLine) # finding the horizontal distance between the parabola and site 
+        for i in range(1,len(_beachLine)):
+            if _beachLine[i].position.x ==_site.position.x:
+               if _beachLine[i].position.y - Parabola.GetYValue(parabola, _beachLine[i].position.x,_sweepLine)<dist: #finding the minimum distance between parabola and site 
+                   dist =  _beachLine[i].position.y - Parabola.GetYValue(parabola, _beachLine[index].position.x,_sweepLine)
+                   index = i
         return _beachLine[index], index      
-               
-        #parabola: Parabola = _beachLine[0]
-        #index: int = 0
-        #while index < len(_beachLine):
-            #if _beachLine[index].position.y > Parabola.GetYValue(parabola, _beachLine[index].position.x,_sweepLine):
-                #parabola = _beachLine[index]
-            #else:
-                #break
-            #index+=1
+              
        
 
     def GenerateCircumcircle(self, _associatedSite: VoronoiSite, _siteA: VoronoiSite, _siteB: VoronoiSite, _siteC: VoronoiSite):
