@@ -94,13 +94,13 @@ class VoronoiGenerator:
             the index of beachline that has the closest proximity to site
 
         '''
-        parabola = Parabola(_beachLine[0])
+        parabola = Parabola(_beachLine[0].position)
         index = 0
-        dist =  parabola - Parabola.GetYValue(parabola,  parabola.position.x,_sweepLine) # finding the horizontal distance between the parabola and site 
+        dist =  _site.position.EuclideanDistance(Vector(_site.position.x, parabola.GetYValue(_site.position.x,_sweepLine)))# finding the vertical distance between the parabola and site 
         for i in range(1,len(_beachLine)):
             if _beachLine[i].position.x ==_site.position.x:
-               if _beachLine[i].position.y - Parabola.GetYValue(parabola, _beachLine[i].position.x,_sweepLine)<dist: #finding the minimum distance between parabola and site 
-                   dist =  _beachLine[i].position.y - Parabola.GetYValue(parabola, _beachLine[index].position.x,_sweepLine)
+               if _site.position.EuclideanDistance(Vector(_site.position.x, Parabola(_beachLine[i].position).GetyValue(_site.position.x,_sweepLine)))<dist: #finding the minimum distance between parabola and site 
+                   dist =  _site.position.EuclideanDistance(Vector(_site.position.x, Parabola(_beachLine[i].position).GetYValue(_site.position.x,_sweepLine)))
                    index = i
         return _beachLine[index], index      
               

@@ -26,7 +26,7 @@ class Parabola:
             
         '''
         for x in range(640):
-            if  self.GetYValue(self,x,_sweepLine) == _other.GetYValue(_other,x,_sweepLine):
+            if  math.isclose(self.GetYValue(x,_sweepLine),_other.GetYValue(_other,x,_sweepLine)):
                 return x , self.GetYValue(x,_sweepLine)
         return ("There are no intersection between the two parabolas.")
 
