@@ -23,15 +23,11 @@ def main():
     points.sort(key=lambda p: p.y)
 
     voronoiGenerator = VoronoiGenerator()
-    beachLine, sweepLine, circumcircles, consideredCircumcircles, vertices = voronoiGenerator.GenerateVoronoi(points)
+    vertices = voronoiGenerator.GenerateVoronoi(points)
 
     pygame.init()
     screen = Screen()
-    screen.parabolas = beachLine
-    screen.debugPoints = points
-    screen.sweepLine = sweepLine
-    screen.circumcircles = circumcircles
-    screen.consideredCircumcircles = consideredCircumcircles
+    screen.points = points
     screen.vertices = vertices
     screen.Display(Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT)
     screen.Update()
