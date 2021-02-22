@@ -1,6 +1,6 @@
 import pygame.display
-import Settings
-from Vector import Vector
+from ..Settings import Settings
+from ..Geometry.Vector import Vector
 from Parabola import Parabola
 from circumcircle import Circumcircle
 from baseObject import BaseObject

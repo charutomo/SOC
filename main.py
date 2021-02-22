@@ -1,8 +1,8 @@
 import pygame
 import random
-from vector import Vector
-from screen import Screen
-from voronoi import VoronoiGenerator
+from Geometry.Vector import Vector
+from Rendering.Screen import Screen
+from Voronoi.VoronoiGenerator import VoronoiGenerator
 import Settings
 
 # Note that this is a linting error not a program error
@@ -22,15 +22,17 @@ def main():
     points = GenerateRandomPoints(Settings.NUMBER_OF_POINTS)
     points.sort(key=lambda p: p.y)
 
-    voronoiGenerator = VoronoiGenerator()
-    vertices = voronoiGenerator.GenerateVoronoi(points)
+
+
+    #voronoiGenerator = VoronoiGenerator()
+    #vertices = voronoiGenerator.GenerateVoronoi(points)
 
     pygame.init()
-    screen = Screen()
-    screen.points = points
-    screen.vertices = vertices
-    screen.Display(Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT)
-    screen.Update()
+    #screen = Screen()
+    #screen.points = points
+    #screen.vertices = vertices
+    #screen.Display(Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT)
+    #screen.Update()
     
 if __name__ == "__main__":
     main()
