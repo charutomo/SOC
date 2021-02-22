@@ -1,5 +1,4 @@
 import math
-from vector import Vector
 
 class Parabola:
     """A curve made with a focus and a directrix.
@@ -37,6 +36,22 @@ class Parabola:
         """
         return (1 / 2 * (self.focus.y - _directrix)) * ((_x - self.focus.x) ** 2) + ((self.focus.y + _directrix) / 2)
 
+    def ValidateParabola(self, _LHS, _RHS):
+        """Checks if the length of the parabola is more than a threshold.
+
+        Parameters
+        ----------
+        _LHS: Vector
+            The LHS breakpoint
+        _RHS: Vector
+            The RHS breakpoint
+
+        Returns
+        -------
+        Returns true if they are not close. False otherwise.
+        """
+        return _LHS != _RHS
+
     def Print(self):
         """Prints the Parabola"""
         print("Focus: " + self.focus.ToString())
@@ -64,5 +79,3 @@ class Parabola:
             if math.isclose(_parabolaA.GetValue(x, _directrix), _parabolaB.GetValue(_parabolaB.x, _directrix)):
                 return x, _parabolaA.GetValue(x,_directrix)
         return ("There are no intersection between the two parabolas.")
-
-    

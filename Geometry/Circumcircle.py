@@ -1,5 +1,4 @@
-import pygame
-from vector import Vector
+from Geometry.Vector import Vector
 
 class Circumcircle:
     """

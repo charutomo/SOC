@@ -1,13 +1,10 @@
-import math
 import pygame
-import Settings
-from vector import Vector
-from VoronoiSite import VoronoiSite
-from VoronoiEvent import *
-from circumcircle import Circumcircle
-from parabola import Parabola
+from Geometry.Vector import Vector
+from Geometry.Parabola import Parabola
+from Geometry.Circumcircle import Circumcircle
+from Voronoi.VoronoiSite import VoronoiSite
+from Voronoi.VoronoiEvent import (VoronoiEvent, SiteEvent, CircleEvent, EventType)
 
-# Structure of beachline is defined in the following manner: Point, Parabola, Point, Parabola, Point, ... , Point, Parabola, Point
 class VoronoiDiagram:
     def __init__(self, _vertices: [Vector], _edges: [(Vector, Vector)]):
         self.vertices: [Vector] = []
@@ -81,11 +78,11 @@ class VoronoiGenerator:
         '''
         index = 0
         parabola = Parabola(_beachLine[index].position)
-        dist =  _site.position.EuclideanDistance(Vector(_site.position.x, parabola.GetYValue(_site.position.x,_sweepLine)))# finding the vertical distance between the parabola and site 
+        dist =  _site.position.EuclideanDistance(Vector(_site.position.x, parabola.GetValue(_site.position.x,_sweepLine)))# finding the vertical distance between the parabola and site 
         for i in range(1,len(_beachLine)):
             if _beachLine[i].position.x ==_site.position.x:
-               if _site.position.EuclideanDistance(Vector(_site.position.x, Parabola(_beachLine[i].position).GetYValue(_site.position.x,_sweepLine))) < dist: #finding the minimum distance between parabola and site 
-                   dist =  _site.position.EuclideanDistance(Vector(_site.position.x, Parabola(_beachLine[i].position).GetYValue(_site.position.x,_sweepLine)))
+               if _site.position.EuclideanDistance(Vector(_site.position.x, Parabola(_beachLine[i].position).GetValue(_site.position.x,_sweepLine))) < dist: #finding the minimum distance between parabola and site 
+                   dist =  _site.position.EuclideanDistance(Vector(_site.position.x, Parabola(_beachLine[i].position).GetValue(_site.position.x,_sweepLine)))
                    index = i
         return _beachLine[index], index      
               

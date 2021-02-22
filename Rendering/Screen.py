@@ -1,29 +1,48 @@
 import pygame.display
-from ..Settings import Settings
-from ..Geometry.Vector import Vector
-from Parabola import Parabola
-from circumcircle import Circumcircle
-from baseObject import BaseObject
-from room import Room
-from VoronoiSite import VoronoiSite
+import math
+import Settings
+from Geometry.Vector import Vector
+from Geometry.Parabola import Parabola
+from Geometry.Circumcircle import Circumcircle
+from Voronoi.VoronoiSite import VoronoiSite
 
 class Screen:
-    def __init__(self):
-        pygame.display.init()
-        self.points: [Vector] = []
-        self.vertices: [Vector] = []
-        self.objects: [BaseObject] = []
-        self.complete: bool = False
-        self.clock: pygame.time.Clock = pygame.time.Clock()
+    """Renderer
     
-    def Display(self, width : int, height : int):
-        pygame.display.set_caption("Renderer")
-        pygame.display.set_mode((width, height))
+    Attributes
+    ----------
+    complete: Boolean
+        Whether the renderer should stop updating
+    clock: Clock
+        The clock used to update
+    """
+    def __init__(self):
+        """Constructor"""
+        pygame.display.init()
+        self.points = []
+        self.vertices = []
+        self.complete = False
+        self.clock = pygame.time.Clock()
+    
+    def Display(self, _width, _height, _caption = "Renderer"):
+        """Display Function
+
+        Parameters
+        ----------
+        _width: float
+            The horizontal length of the screen
+        _height: float
+            The vertical length of the screen
+        _caption: String
+            The window title
+        """
+        pygame.display.set_mode(_width, _height)
+        pygame.display.set_caption(_caption)
 
     def Draw(self):
+        """Draw Function"""
         surface = pygame.display.get_surface()
-        for o in self.objects:
-            o.Draw(surface)
+        
         for o in self.points:
             pygame.draw.ellipse(
                 surface,
@@ -35,13 +54,12 @@ class Screen:
                 pygame.Color(0, 0, 255),
                 pygame.Rect(v.x, v.y, 4.0, 4.0)
             )
+
         pygame.display.update()
 
     def Update(self):
+        """Update Function"""
         while not self.complete:
-            for o in self.objects:
-                o.Update()
-
             self.Draw()
 
             self.clock.tick(60)
