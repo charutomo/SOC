@@ -1,12 +1,15 @@
-# SOC: Space Optimization For COVID-19 Wards
+# SOC
+** Space Optimization For COVID-19 Wards**
 
 <br/>
-**Welcome!** :wave:
+** Welcome!** :wave:
 <br/>
+
 ## Introduction
 [@KieranNg](https://github.com/KieranNg) and I are Mathematical Science students from NTU under SPMS.
 We are working on Space Optimisation: A qualitative project on how to isolate patients in a given setting for SCOPE Odyssey. We are trying to optimize a given ward space and equally divide them into subsections.<br/>
-:warning: Under Work in Progress :warning:
+<br/>
+:warning: Under work in progress :warning:
 <br/>
 
 
@@ -45,9 +48,9 @@ SOC
 ```
 
 ## Slides and Report
-###Slides
-Slides will be available. :desktop_computer:<br/>
-###Report
+### Slides
+Slides will be available. :desktop_computer: <br/>
+### Report
 Our report will be released on later date. :notebook_with_decorative_cover: <br/>
 <br/>
 
