@@ -2,28 +2,36 @@ import pygame
 from Geometry.Vector import Vector
 from Geometry.Parabola import Parabola
 from Geometry.Circumcircle import Circumcircle
+from Voronoi.BeachLine import BeachLine
 from Voronoi.VoronoiSite import VoronoiSite
 from Voronoi.VoronoiEvent import (VoronoiEvent, SiteEvent, CircleEvent, EventType)
 
-class VoronoiDiagram:
-    def __init__(self, _vertices: [Vector], _edges: [(Vector, Vector)]):
-        self.vertices: [Vector] = []
-        self.edges: [(Vector, Vector)] = []
-
 class VoronoiGenerator:
+    """The class used to generate the Voronoi diagram.
+    
+    Attributes
+    ----------
+    sweepLine: float
+        The object used to advance the algorithm
+    beachLine: [VoronoiSite]:
+        The list of sites making up the parabolas
+    queue: [VoronoiEvent]
+        The priority queue used to contain the events
+    sitesToConsider: [VoronoiSite]
+        The list of sites yet to be handled
+    vertices: [Vector]
+        The vertices to be returned
+    """
     def __init__(self):
-        self.sweepLine: float = 0.0
-        self.queue: [VoronoiEvent] = []
-        self.sitesToConsider: [VoronoiSite] = []
-        self.beachLine: [VoronoiSite] = []              # This is a list of sites not parabolas
-        self.vertices: [Vector] = []
+        self.sweepLine = 0.0
+        self.beachLine = BeachLine()
+        self.queue = []
+        self.sitesToConsider = []
+        self.vertices = []
 
     def GenerateVoronoi(self, _points: [Vector]):
-        for p in _points:
-            newSite = VoronoiSite(p)
-            self.sitesToConsider.append(newSite)
-            self.queue.append(SiteEvent(newSite))
-
+        self.InitSites(_points)
+        
         while len(self.queue) > 0:
             event = self.queue.pop(0)
             self.sweepLine = event.position.y
@@ -31,67 +39,78 @@ class VoronoiGenerator:
             if event.type is EventType.SITEEVENT:
                 newSite = event.HandleEvent()
 
-                if len(self.beachLine) > 0:
+                if len(self.beachLine.contents) > 0:
                     associatedSite, index = self.GetClosestParabola(self.beachLine, self.sweepLine, newSite)
-                    self.beachLine.insert(index, newSite)
-                    if index != 0 or index != (len(self.beachLine) - 1):
-                        self.beachLine.insert(index, associatedSite)
+                    self.beachLine.Insert(index, newSite)
+                    if index != 0 or index != (len(self.beachLine.contents) - 1):
+                        self.beachLine.Insert(index, associatedSite)
 
-                    for i in range(0, len(self.beachLine) - 2):
+                    for i in range(0, len(self.beachLine.contents) - 2):
                         self.GenerateCircumcircle(
-                            self.beachLine[i + 1],
-                            self.beachLine[i],
-                            self.beachLine[i + 1],
-                            self.beachLine[i + 2])
+                            self.beachLine.contents[i],
+                            self.beachLine.contents[i + 1],
+                            self.beachLine.contents[i + 2],
+                            Parabola(self.beachLine.contents[i + 1]))
                 else:
-                    self.beachLine.insert(0, newSite)
+                    self.beachLine.Insert(0, newSite)
             
             elif event.type is EventType.VERTEXEVENT:
                 circumcircle: Circumcircle = event.HandleEvent()
-                self.beachLine.remove(circumcircle.associatedSite)
-                self.sitesToConsider.remove(circumcircle.associatedSite)
+                self.beachLine.RemoveSite(circumcircle.associatedParabola.site)
+                self.sitesToConsider.remove(circumcircle.associatedParabola.site)
                 self.vertices.append(circumcircle.midpoint)
 
             self.queue.sort(key=lambda e: e.position.y)
 
-        print(len(self.vertices))
         return self.vertices
 
-    def GetClosestParabola(self, _beachLine: [VoronoiSite], _sweepLine: float, _site: [VoronoiSite]):
+    def InitSites(self, _points):
+        for p in _points:
+            newSite = VoronoiSite(p)
+            self.sitesToConsider.append(newSite)
+            self.queue.append(SiteEvent(newSite))
+
+    def GetClosestParabola(self, _beachLine, _sweepLine, _site):
         '''
         Parameters
         ----------
-        _beachLine : [VoronoiSite]
-            the sequences of beachlines
+        _beachLine : Beachline
+            The beachline data structure
         _sweepLine : float
-            sweepline
-        _site : [VoronoiSite]
-            event sites
+            The sweepline
+        _site : VoronoiSite
+            The event site
 
         Returns
         -------
-        _beachLine[index]: parabola
+        _beachLine.contents[index]: parabola
             the parabola most adjacent to the site 
         index : float
             the index of beachline that has the closest proximity to site
-
         '''
         index = 0
-        parabola = Parabola(_beachLine[index].position)
-        dist =  _site.position.EuclideanDistance(Vector(_site.position.x, parabola.GetValue(_site.position.x,_sweepLine)))# finding the vertical distance between the parabola and site 
-        for i in range(1,len(_beachLine)):
-            if _beachLine[i].position.x ==_site.position.x:
-               if _site.position.EuclideanDistance(Vector(_site.position.x, Parabola(_beachLine[i].position).GetValue(_site.position.x,_sweepLine))) < dist: #finding the minimum distance between parabola and site 
-                   dist =  _site.position.EuclideanDistance(Vector(_site.position.x, Parabola(_beachLine[i].position).GetValue(_site.position.x,_sweepLine)))
-                   index = i
-        return _beachLine[index], index      
-              
-    def GenerateCircumcircle(self, _associatedSite: VoronoiSite, _siteA: VoronoiSite, _siteB: VoronoiSite, _siteC: VoronoiSite):
+        parabola = Parabola(_beachLine.contents[index])
+        dist =  Vector.EuclideanDistance(_site.position, Vector(_site.position.x, parabola.GetValue(_site.position.x,_sweepLine))) # finding the vertical distance between the parabola and site 
+
+        for i in range(1, len(_beachLine.contents)):
+            if _beachLine.contents[i].position.x == _site.position.x:
+                newDist = Vector.EuclideanDistance(_site.position, Vector(_site.position.x, Parabola(_beachLine.contents[i]).GetValue(_site.position.x,_sweepLine)))
+                if newDist < dist: # finding the minimum distance between parabola and site 
+                    dist =  newDist
+                    index = i
+        
+        return _beachLine.contents[index], index      
+
+    def GenerateCircumcircle(self, _siteA, _siteB, _siteC, _parabola):
         if _siteA == _siteB or _siteA == _siteC or _siteB == _siteC:
             return
         else:
-            newCircumcircle = Circumcircle(_associatedSite, _siteA, _siteB, _siteC)
+            newCircumcircle = Circumcircle(_siteA.position, _siteB.position, _siteC.position, _parabola)
             newCircumcircle.Generate()
+            
+            points = []
+            for s in self.sitesToConsider:
+                points.append(s.position)
 
-            if newCircumcircle.lowestPoint.y > self.sweepLine and newCircumcircle.NoneInCircle(self.sitesToConsider):
+            if newCircumcircle.lowestPoint.y > self.sweepLine and Circumcircle.NoneInCircle(newCircumcircle, points):
                 self.queue.append(CircleEvent(newCircumcircle))

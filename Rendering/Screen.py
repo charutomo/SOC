@@ -36,7 +36,7 @@ class Screen:
         _caption: String
             The window title
         """
-        pygame.display.set_mode(_width, _height)
+        pygame.display.set_mode((_width, _height))
         pygame.display.set_caption(_caption)
 
     def Draw(self):
