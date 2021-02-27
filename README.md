@@ -1,8 +1,8 @@
 # SOC
-** Space Optimization For COVID-19 Wards**
-
+**Space Optimization For COVID-19 Wards**
 <br/>
-** Welcome!** :wave:
+
+**Welcome!** :wave:
 <br/>
 
 ## Introduction
@@ -30,8 +30,7 @@ SOC
 ├─── Voronoi
 │       ├─── BeachLine.py
 │       ├─── VoronoiEvent.py
-│       ├─── VoronoiGenerator.py
-│       └─── VoronoiSite.py
+│       └─── VoronoiGenerator.py
 │
 ├─── Rendering
 │       └─── Screen.py
@@ -42,14 +41,14 @@ SOC
 │       └─── Vector.py
 │   
 ├─── Data Structures
-│       ├─── Queue
-│       └─── Binary Search Tree
+│       ├─── BST.py
+│       └─── Queue.py
 
 ```
 
 ## Slides and Report
 ### Slides
-Slides will be available. :desktop_computer: <br/>
+Slides will be available soon. :desktop_computer: <br/>
 ### Report
 Our report will be released on later date. :notebook_with_decorative_cover: <br/>
 <br/>
