@@ -3,7 +3,6 @@ from Geometry.Vector import Vector
 from Geometry.Parabola import Parabola
 from Geometry.Circumcircle import Circumcircle
 from Voronoi.BeachLine import BeachLine
-from Voronoi.VoronoiSite import VoronoiSite
 from Voronoi.VoronoiEvent import (VoronoiEvent, SiteEvent, CircleEvent, EventType)
 
 class VoronoiGenerator:
@@ -17,7 +16,7 @@ class VoronoiGenerator:
         The list of sites making up the parabolas
     queue: [VoronoiEvent]
         The priority queue used to contain the events
-    sitesToConsider: [VoronoiSite]
+    sitesToConsider: [Vector]
         The list of sites yet to be handled
     vertices: [Vector]
         The vertices to be returned
@@ -56,8 +55,8 @@ class VoronoiGenerator:
             
             elif event.type is EventType.VERTEXEVENT:
                 circumcircle: Circumcircle = event.HandleEvent()
-                self.beachLine.RemoveSite(circumcircle.associatedParabola.site)
-                self.sitesToConsider.remove(circumcircle.associatedParabola.site)
+                self.beachLine.RemoveSite(circumcircle.associatedParabola.focus)
+                self.sitesToConsider.remove(circumcircle.associatedParabola.focus)
                 self.vertices.append(circumcircle.midpoint)
 
             self.queue.sort(key=lambda e: e.position.y)
@@ -66,9 +65,8 @@ class VoronoiGenerator:
 
     def InitSites(self, _points):
         for p in _points:
-            newSite = VoronoiSite(p)
-            self.sitesToConsider.append(newSite)
-            self.queue.append(SiteEvent(newSite))
+            self.sitesToConsider.append(p)
+            self.queue.append(SiteEvent(p))
 
     def GetClosestParabola(self, _beachLine, _sweepLine, _site):
         '''
@@ -90,11 +88,11 @@ class VoronoiGenerator:
         '''
         index = 0
         parabola = Parabola(_beachLine.contents[index])
-        dist =  Vector.EuclideanDistance(_site.position, Vector(_site.position.x, parabola.GetValue(_site.position.x,_sweepLine))) # finding the vertical distance between the parabola and site 
+        dist =  Vector.EuclideanDistance(_site, Vector(_site.x, parabola.GetValue(_site.x,_sweepLine))) # finding the vertical distance between the parabola and site 
 
         for i in range(1, len(_beachLine.contents)):
-            if _beachLine.contents[i].position.x == _site.position.x:
-                newDist = Vector.EuclideanDistance(_site.position, Vector(_site.position.x, Parabola(_beachLine.contents[i]).GetValue(_site.position.x,_sweepLine)))
+            if _beachLine.contents[i].x == _site.x:
+                newDist = Vector.EuclideanDistance(_site, Vector(_site.x, Parabola(_beachLine.contents[i]).GetValue(_site.x,_sweepLine)))
                 if newDist < dist: # finding the minimum distance between parabola and site 
                     dist =  newDist
                     index = i
@@ -105,12 +103,8 @@ class VoronoiGenerator:
         if _siteA == _siteB or _siteA == _siteC or _siteB == _siteC:
             return
         else:
-            newCircumcircle = Circumcircle(_siteA.position, _siteB.position, _siteC.position, _parabola)
+            newCircumcircle = Circumcircle(_siteA, _siteB, _siteC, _parabola)
             newCircumcircle.Generate()
-            
-            points = []
-            for s in self.sitesToConsider:
-                points.append(s.position)
 
-            if newCircumcircle.lowestPoint.y > self.sweepLine and Circumcircle.NoneInCircle(newCircumcircle, points):
+            if newCircumcircle.lowestPoint.y > self.sweepLine and Circumcircle.NoneInCircle(newCircumcircle, self.sitesToConsider):
                 self.queue.append(CircleEvent(newCircumcircle))

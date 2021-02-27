@@ -4,7 +4,6 @@ import Settings
 from Geometry.Vector import Vector
 from Geometry.Parabola import Parabola
 from Geometry.Circumcircle import Circumcircle
-from Voronoi.VoronoiSite import VoronoiSite
 
 class Screen:
     """Renderer

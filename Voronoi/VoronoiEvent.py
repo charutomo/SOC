@@ -44,7 +44,7 @@ class SiteEvent(VoronoiEvent):
     
     Attributes
     ----------
-    site: VoronoiSite
+    site: Vector
         The site that triggers the event
     """
     def __init__(self, _site):
@@ -52,10 +52,10 @@ class SiteEvent(VoronoiEvent):
         
         Parameters
         ----------
-        _site: VoronoiSite
+        _site: Vector
             The site that triggers the event
         """
-        super().__init__(_site.position, EventType.SITEEVENT)
+        super().__init__(_site, EventType.SITEEVENT)
         self.site = _site
     
     def HandleEvent(self):
