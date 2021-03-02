@@ -43,12 +43,14 @@ SOC
 ├─── Data Structures
 │       ├─── BST.py
 │       └─── Queue.py
+│
+└─── SOC Slides
 
 ```
 
 ## Slides and Report
 ### Slides
-Slides will be available soon. :desktop_computer: <br/>
+Slides are now available under `SOC Slides`. :desktop_computer: <br/>
 ### Report
 Our report will be released on later date. :notebook_with_decorative_cover: <br/>
 <br/>
