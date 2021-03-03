@@ -8,7 +8,7 @@ class Parabola:
     focus: Vector
         The focus of the parabola
     """
-    def __init__(self, _focus):
+    def __init__(self, _site):
         """Constructor
         
         Parameters
@@ -16,7 +16,7 @@ class Parabola:
         _focus: Vector
             The focus of the parabola
         """
-        self.focus = _focus
+        self.focus = _site
 
     def GetValue(self, _x, _directrix):
         """Computes the y value of the parabola given an x value.

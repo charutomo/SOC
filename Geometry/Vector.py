@@ -36,7 +36,10 @@ class Vector:
         Returns
         -------
         A boolean value indicating whether the two vectors are approximately equal.
+        Also returns False if _other is None
         """
+        if _other == None:
+            return False
         return math.isclose(self.x, _other.x) and math.isclose(self.y, _other.y)
 
     def ToTuple(self):
@@ -68,4 +71,5 @@ class Vector:
         -------
         Returns the distance as a float value.
         """
+        
         return ((_vectorA.x - _vectorB.x) ** 2 + (_vectorA.y - _vectorB.y) ** 2) ** (1/2)
