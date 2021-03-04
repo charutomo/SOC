@@ -19,7 +19,7 @@ class Queue:
         Parameters
         ----------
         element : 
-            element that is to be addded at the rear of the queue
+            element that is to be added at the rear of the queue
 
         '''
         if (self.front == None) and (self.rear == None):
