@@ -10,7 +10,7 @@
 [@KieranNg](https://github.com/KieranNg) and I are Mathematical Science students from NTU under SPMS.
 We are working on Space Optimisation: A qualitative project on how to isolate patients in a given setting for SCOPE Odyssey. We are trying to optimize a given ward space and equally divide them into subsections.<br/>
 <br/>
-:warning: [WIP](https://img.shields.io/badge/Status-Work%20In%20Progress-red)Under :warning: 
+:warning:[![WIP](https://img.shields.io/badge/Status-Work%20In%20Progress-red)] :warning: 
 
 <br/>
 
@@ -50,7 +50,7 @@ SOC
 ─ SOC Slides
 
 ```
-[PyPi Python Versions](https://img.shields.io/pypi/pyversions/yt2mp3.svg)
+[![PyPi Python Versions](https://img.shields.io/pypi/pyversions/yt2mp3.svg)]
 
 
 ## Slides and Report
@@ -59,6 +59,5 @@ Slides are now available under `SOC Slides.pdf`. :desktop_computer: <br/>
 ### Report
 Our report will be released on later date. :notebook_with_decorative_cover: <br/>
 <br/>
-
 
 **Thank you for your support!** :blush:
