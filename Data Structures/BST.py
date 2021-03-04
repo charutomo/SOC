@@ -12,14 +12,12 @@ class Node:
         self.data = data
         self.leftchild = None 
         self.rightchild = None
-        self.head = None
        
     
 class BST: 
     def __init__(self,data):
-            self.head = data
-            self.node = Node(data)
-        
+            self.head = None
+            self.size = 0
 
     def insert(self,data):
         '''
@@ -34,18 +32,16 @@ class BST:
             returns the updated bst
 
         '''
-        if self.head == None:
+        if self.head is None:
             self.head = data
-            self.node = Node(data)
-            return self.node
         else:
-            if self.head == data:
-                return self.node
+            if self.head.data == data.data:
+                pass
             elif self.head < data:
                 self.node.rightchild = BST.insert(self.node.rightchild,data)
             else:
                 self.node.leftchild = BST.insert(self.node.leftchild,data)
-            return self.node
+        return self.node
     
     def inordertraversal(self): 
         if self != None:
@@ -83,15 +79,13 @@ class BST:
     def search(self,key):
         if self.head == None or self.node == key:
             return self.head
- 
         if self.data < key:
             return BST.search(self.node.rightchild,key)
         else:
             return BST.search(self.node.leftchild,key)
 
 
-bst1 = None
-bst1 = BST(bst1)
+bst1 = Node(None)
 bst1 = BST.insert(bst1,40)   
 bst1 = BST.insert(bst1,90)  
 bst1 = BST.insert(bst1,64)     
