@@ -23,12 +23,13 @@ def main():
     points.sort(key=lambda p: p.y)
 
     voronoiGenerator = VoronoiGenerator()
-    vertices = voronoiGenerator.GenerateVoronoi(points)
+    edges = voronoiGenerator.GenerateVoronoi(points)
 
     pygame.init()
     screen = Screen()
     screen.points = points
-    screen.vertices = vertices
+    
+    screen.edges = edges
     screen.Display(Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT)
     screen.Update()
     

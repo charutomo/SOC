@@ -75,26 +75,26 @@ class CircleEvent(VoronoiEvent):
     
     Attributes
     ----------
-    circumcircle: Circumcircle
-        The bounding circumcircle 
+    arc: Arc
+        The associated Arc 
     """
-    def __init__(self, _circumcircle):
+    def __init__(self, _circumcircle, _arc):
         """Constructor 
         
         Parameters
         ----------
-        _circumcircle: Circumcircle
-            The bounding circumcircle 
+        _arc: Arc
+            The associated Arc
         """
         super().__init__(_circumcircle.lowestPoint, EventType.VERTEXEVENT)
-        self.circumcircle = _circumcircle
+        self.arc = _arc
 
     def HandleEvent(self):
         """Circle Event Trigger.
 
         Returns
         -------
-        The circumcircle that contains the lowest point
+        The arc that contains the lowest point
         """
-        return self.circumcircle
+        return self.arc
 

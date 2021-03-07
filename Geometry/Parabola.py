@@ -1,4 +1,5 @@
 import math
+from Geometry.Vector import Vector
 
 class Parabola:
     """A curve made with a focus and a directrix.
@@ -59,7 +60,7 @@ class Parabola:
     # Static Methods
 
     @staticmethod
-    def GetBreakpoint(_parabolaA, _parabolaB, _directrix):
+    def GetBreakpoint(_parabolaA, _parabolaB, _pointX):
         '''Gets the intersection between 2 parabolas
 
         Parameters
@@ -68,14 +69,36 @@ class Parabola:
             The first parabola
         _parabolaB: Parabola
             The second parabola
-        _directrix: float
-            The current height of the directrix
+        _point: Vector
+            The point to check
 
         Returns
         -------
         The intersecting point as a Vector
         '''
-        for x in range(640):        # Oh no what is this
-            if math.isclose(_parabolaA.GetValue(x, _directrix), _parabolaB.GetValue(_parabolaB.x, _directrix)):
-                return x, _parabolaA.GetValue(x,_directrix)
-        return ("There are no intersection between the two parabolas.")
+        result = Vector(0.0, 0.0)
+        p = _parabolaA.focus
+
+        if _parabolaA.focus.x == _parabolaB.focus.x:
+            result.y = (_parabolaA.focus.y + _parabolaB.focus.y) / 2
+        elif _parabolaB.focus.x == _pointX:
+            result.y = _parabolaB.focus.y
+        elif _parabolaA.focus.x == _pointX:
+            result.y = _parabolaA.focus.y
+            p = _parabolaB.focus
+        else:
+            n0 = 2 * (_parabolaA.focus.x - _pointX)
+            n1 = 2 * (_parabolaB.focus.x - _pointX)
+
+            a = 1 / n0 - 1 / n1
+            b = -2 * (_parabolaA.focus.y / n0 - _parabolaB.focus.y / n1)
+            c = (_parabolaA.focus.y ** 2 + _parabolaA.focus.x ** 2 - _pointX ** 2) / n0 - (_parabolaB.focus.y ** 2 + _parabolaB.focus.x ** 2 - _pointX ** 2) / n1
+
+            print("Parabola:", a, b, c)
+            discriminant = b ** 2 - 4 * a * c
+            if discriminant < 0: 
+                return None
+            result.y = (-b - math.sqrt(discriminant)) / (2*a)
+
+        result.x = (p.x ** 2 + (p.y - result.y) ** 2 - _pointX ** 2) / (2 * p.x - 2 * _pointX)
+        return result

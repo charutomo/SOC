@@ -19,7 +19,7 @@ class Circumcircle:
     lowestPoint: Vector
         The point on the boundary of the circle with the smallest y value
     """
-    def __init__(self, _vectorA, _vectorB, _vectorC, _parabola):
+    def __init__(self, _vectorA, _vectorB, _vectorC):
         """Constructor
         
         Parameters
@@ -34,7 +34,6 @@ class Circumcircle:
         self.vectorA = _vectorA
         self.vectorB = _vectorB
         self.vectorC = _vectorC
-        self.associatedParabola = _parabola
         self.midpoint = None
         self.radius = None
         self.lowestPoint = None
