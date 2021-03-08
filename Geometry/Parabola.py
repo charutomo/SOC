@@ -60,7 +60,7 @@ class Parabola:
     # Static Methods
 
     @staticmethod
-    def GetBreakpoint(_parabolaA, _parabolaB, _pointX):
+    def GetBreakpoint(_parabolaA, _parabolaB, _directrix):
         '''Gets the intersection between 2 parabolas
 
         Parameters
@@ -69,36 +69,44 @@ class Parabola:
             The first parabola
         _parabolaB: Parabola
             The second parabola
-        _point: Vector
-            The point to check
+        _directrix: float
+            The directrix (Sweepline)
 
         Returns
         -------
         The intersecting point as a Vector
         '''
         result = Vector(0.0, 0.0)
-        p = _parabolaA.focus
 
-        if _parabolaA.focus.x == _parabolaB.focus.x:
-            result.y = (_parabolaA.focus.y + _parabolaB.focus.y) / 2
-        elif _parabolaB.focus.x == _pointX:
-            result.y = _parabolaB.focus.y
-        elif _parabolaA.focus.x == _pointX:
-            result.y = _parabolaA.focus.y
-            p = _parabolaB.focus
+        if _parabolaB.focus.y == _directrix:
+            return _parabolaB.focus
+        elif _parabolaA.focus.y == _directrix:
+            return _parabolaA.focus
         else:
-            n0 = 2 * (_parabolaA.focus.x - _pointX)
-            n1 = 2 * (_parabolaB.focus.x - _pointX)
+            a = Vector(_parabolaA.focus.x, _parabolaA.focus.y)
+            b = Vector(_parabolaB.focus.x, _parabolaB.focus.y)
+            c = _directrix
 
-            a = 1 / n0 - 1 / n1
-            b = -2 * (_parabolaA.focus.y / n0 - _parabolaB.focus.y / n1)
-            c = (_parabolaA.focus.y ** 2 + _parabolaA.focus.x ** 2 - _pointX ** 2) / n0 - (_parabolaB.focus.y ** 2 + _parabolaB.focus.x ** 2 - _pointX ** 2) / n1
+            xSquaredCoefficient = b.y - a.y
+            xCoefficient = 2 * (-a.x * b.y + a.x * c + b.x * a.y - b.x * c)
+            constantA = b.y * (-(a.x ** 2) - (a.y ** 2) + c ** 2)
+            constantB = a.y * (b.x ** 2 + b.y ** 2 - (c ** 2))
+            constantC = c * (a.x ** 2 + a.y ** 2 - (b.x ** 2) - (b.y ** 2))
+            constantValue = -(constantA + constantB + constantC)
 
-            print("Parabola:", a, b, c)
-            discriminant = b ** 2 - 4 * a * c
-            if discriminant < 0: 
+            discriminant = xCoefficient ** 2 - 4 * xSquaredCoefficient * constantValue
+
+            if discriminant < 0:
                 return None
-            result.y = (-b - math.sqrt(discriminant)) / (2*a)
 
-        result.x = (p.x ** 2 + (p.y - result.y) ** 2 - _pointX ** 2) / (2 * p.x - 2 * _pointX)
-        return result
+            xA = (-xCoefficient + math.sqrt(discriminant)) / (2 * xSquaredCoefficient)
+            xB = (-xCoefficient - math.sqrt(discriminant)) / (2 * xSquaredCoefficient)
+
+            midpoint = Vector.Midpoint(_parabolaA.focus, _parabolaB.focus)
+            chosenValue = xB
+            if abs(midpoint.x - xA) < abs(midpoint.x - xB):
+                chosenValue = xA
+
+            result.x = chosenValue
+            result.y = ((a.x - result.x) ** 2 + a.y ** 2 - (c ** 2)) / (2 * (a.y - c))
+            return result

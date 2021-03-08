@@ -2,7 +2,6 @@ import pygame
 from Geometry.Vector import Vector
 from Geometry.Parabola import Parabola
 from Geometry.Circumcircle import Circumcircle
-from Voronoi.BeachLine import BeachLine
 from Voronoi.VoronoiEvent import (VoronoiEvent, SiteEvent, CircleEvent, EventType)
 from DCEL.DCEL import (Vertex, HalfEdge, Edge, Face)
 import Settings
@@ -17,7 +16,7 @@ class Arc(Parabola):
         self.event = None
     
     def __eq__(self, _other):
-        return self.focus == _other.focus
+        return self is _other
 
 class VoronoiGenerator:
     """The class used to generate the Voronoi diagram.
@@ -169,7 +168,7 @@ class VoronoiGenerator:
             
         newCircumcircle = Circumcircle(_arc.prev.focus, _arc.focus, _arc.next.focus)
         newCircumcircle.Generate()
-
+        
         if newCircumcircle.lowestPoint.y > _newSite.y:
             return CircleEvent(newCircumcircle, _arc)
 

@@ -38,8 +38,6 @@ class Vector:
         A boolean value indicating whether the two vectors are approximately equal.
         Also returns False if _other is None
         """
-        if _other == None:
-            return False
         return math.isclose(self.x, _other.x) and math.isclose(self.y, _other.y)
 
     def ToTuple(self):
@@ -55,6 +53,10 @@ class Vector:
         print(self.ToString())
 
     # Static Methods
+
+    @staticmethod
+    def Midpoint(_vectorA, _vectorB):
+        return Vector((_vectorA.x + _vectorB.x) / 2.0, (_vectorA.y + _vectorB.y) / 2.0)
 
     @staticmethod
     def EuclideanDistance(_vectorA, _vectorB):

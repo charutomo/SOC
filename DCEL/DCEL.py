@@ -49,7 +49,6 @@ class HalfEdge:
         bool
             True if the origin and destination vertex are equal
         '''
-        if _other == None or _other.origin == None or _other.next.origin == None: return
         return self.origin == _other.origin and self.next.origin == _other.next.origin
     
     def Complete(self, _endPoint):

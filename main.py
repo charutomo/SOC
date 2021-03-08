@@ -1,6 +1,7 @@
 import pygame
 import random
 from Geometry.Vector import Vector
+from Geometry.Parabola import Parabola
 from Rendering.Screen import Screen
 from Voronoi.VoronoiGenerator import VoronoiGenerator
 import Settings
