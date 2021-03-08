@@ -21,8 +21,6 @@ class HalfEdge:
         The point the edge starts from
     twin: HalfEdge
         The halfedge going in the opposite direction
-    incidentFace: Face
-        The face to the left of the halfedge
     next: HalfEdge
         The next halfedge
     prev: HalfEdge
@@ -30,9 +28,7 @@ class HalfEdge:
     """
     def __init__(self, _origin):
         self.origin = _origin
-        self.destination = None
         self.twin = None
-        self.incidentFace = None
         self.next = None
         self.prev = None
     
@@ -50,9 +46,6 @@ class HalfEdge:
             True if the origin and destination vertex are equal
         '''
         return self.origin == _other.origin and self.next.origin == _other.next.origin
-    
-    def Complete(self, _endPoint):
-        self.destination = _endPoint
 
     def Print(self):
         '''Prints edge coefficients
@@ -78,9 +71,9 @@ class Edge:
     _leftHalfEdge: HalfEdge
         The leftHalfEdge
     """
-    def __init__(self, _rightHalfEdge, _leftHalfEdge):
-        self.rightHalfEdge = _rightHalfEdge
-        self.leftHalfEdge = _leftHalfEdge
+    def __init__(self):
+        self.rightHalfEdge = None
+        self.leftHalfEdge = None
 
 class Face:
     '''face of DCEL'''

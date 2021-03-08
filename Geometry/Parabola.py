@@ -96,9 +96,6 @@ class Parabola:
 
             discriminant = xCoefficient ** 2 - 4 * xSquaredCoefficient * constantValue
 
-            if discriminant < 0:
-                return None
-
             xA = (-xCoefficient + math.sqrt(discriminant)) / (2 * xSquaredCoefficient)
             xB = (-xCoefficient - math.sqrt(discriminant)) / (2 * xSquaredCoefficient)
 

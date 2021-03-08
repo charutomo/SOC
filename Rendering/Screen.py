@@ -20,7 +20,7 @@ class Screen:
         pygame.display.init()
         self.points = []
         self.vertices = []
-        self.edges = []
+        self.halfEdges = []
         self.complete = False
         self.clock = pygame.time.Clock()
     
@@ -48,13 +48,17 @@ class Screen:
                 surface,
                 pygame.Color(255, 0, 0),
                 pygame.Rect(o.x, o.y, 4.0, 4.0))
-        for e in self.edges:
+        for e in self.halfEdges:
             pygame.draw.line(
                 surface,
                 pygame.Color(0, 255, 0),
                 e.origin.ToTuple(), 
-                e.destination.ToTuple(), 
+                e.twin.origin.ToTuple(), 
                 1)
+            pygame.draw.ellipse(
+                surface,
+                pygame.Color(0, 0, 255),
+                pygame.Rect(e.origin.x, e.origin.y, 4.0, 4.0))
 
         pygame.display.update()
 
