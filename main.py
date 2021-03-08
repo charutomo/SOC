@@ -10,14 +10,14 @@ import math
 # Note that this is a linting error not a program error
 # pylint: disable=no-member
 
-def GenerateRandomPoints(_length: int): #generate list of points, parameter how vetsors you want to generate
-    points: [Vector] = [Vector] * _length
+def GenerateRandomPoints(_length): #generate list of points, parameter how vetsors you want to generate
+    points = [Vector] * _length
     for i in range(len(points)):
         points[i] = Vector(
             _x = math.floor(random.random() * Settings.SCREEN_WIDTH),
             _y = math.floor(random.random() * Settings.SCREEN_HEIGHT))
     return points
-
+    
 def main():
     print("Main")
 

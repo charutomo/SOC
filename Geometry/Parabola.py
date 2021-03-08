@@ -35,7 +35,8 @@ class Parabola:
         -------
         The y coordinate as a float
         """
-        return (1 / 2 * (self.focus.y - _directrix)) * ((_x - self.focus.x) ** 2) + ((self.focus.y + _directrix) / 2)
+
+        return ((self.focus.x - _x) ** 2 + self.focus.x ** 2 - _directrix ** 2) / (2 * (self.focus.y - _directrix))
 
     def ValidateParabola(self, _LHS, _RHS):
         """Checks if the length of the parabola is more than a threshold.

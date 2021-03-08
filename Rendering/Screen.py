@@ -3,7 +3,6 @@ import math
 import Settings
 from Geometry.Vector import Vector
 from Geometry.Parabola import Parabola
-from Geometry.Circumcircle import Circumcircle
 
 class Screen:
     """Renderer
@@ -59,6 +58,10 @@ class Screen:
                 surface,
                 pygame.Color(0, 0, 255),
                 pygame.Rect(e.origin.x, e.origin.y, 4.0, 4.0))
+            pygame.draw.ellipse(
+                surface,
+                pygame.Color(0, 0, 255),
+                pygame.Rect(e.twin.origin.x, e.twin.origin.y, 4.0, 4.0))
 
         pygame.display.update()
 

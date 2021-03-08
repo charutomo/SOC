@@ -30,10 +30,6 @@ class VoronoiEvent:
         """
         self.position = _position
         self.type = _type
-    
-    def HandleEvent(self):
-        """Event Trigger."""
-        pass
 
 class SiteEvent(VoronoiEvent):
     """Site Event.
@@ -57,15 +53,6 @@ class SiteEvent(VoronoiEvent):
         """
         super().__init__(_site, EventType.SITEEVENT)
         self.site = _site
-    
-    def HandleEvent(self):
-        """Site Event Trigger.
-
-        Returns
-        -------
-        The site that the sweepline passes through 
-        """
-        return self.site
 
 class CircleEvent(VoronoiEvent):
     """Circle Event.
@@ -78,7 +65,7 @@ class CircleEvent(VoronoiEvent):
     arc: Arc
         The associated Arc 
     """
-    def __init__(self, _circumcircle, _arc):
+    def __init__(self, _lowestPoint, _arc):
         """Constructor 
         
         Parameters
@@ -86,15 +73,5 @@ class CircleEvent(VoronoiEvent):
         _arc: Arc
             The associated Arc
         """
-        super().__init__(_circumcircle.lowestPoint, EventType.VERTEXEVENT)
+        super().__init__(_lowestPoint, EventType.VERTEXEVENT)
         self.arc = _arc
-
-    def HandleEvent(self):
-        """Circle Event Trigger.
-
-        Returns
-        -------
-        The arc that contains the lowest point
-        """
-        return self.arc
-

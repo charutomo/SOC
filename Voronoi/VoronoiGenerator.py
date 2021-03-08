@@ -1,10 +1,10 @@
 import pygame
 from Geometry.Vector import Vector
 from Geometry.Parabola import Parabola
-from Geometry.Circumcircle import Circumcircle
 from Voronoi.VoronoiEvent import (VoronoiEvent, SiteEvent, CircleEvent, EventType)
 from DCEL.DCEL import (Vertex, Edge, HalfEdge, Face)
 import Settings
+import math
 
 class Arc(Parabola):
     def __init__(self, _site, _prev, _next):
@@ -50,7 +50,7 @@ class VoronoiGenerator:
             self.sweepLine = event.position.y
 
             if event.type is EventType.SITEEVENT:
-                newSite = event.HandleEvent()
+                newSite = event.position
 
                 if self.rootArc is None:
                     self.rootArc = Arc(newSite, None, None)
@@ -59,7 +59,7 @@ class VoronoiGenerator:
                 self.InsertNewSite(newSite)
             elif event.type is EventType.VERTEXEVENT:
                 newHalfEdge = HalfEdge(event.position)
-                associatedArc = event.HandleEvent()
+                associatedArc = event.arc
                 
                 if associatedArc.prev is not None:
                     associatedArc.prev.next = associatedArc.next
@@ -98,9 +98,6 @@ class VoronoiGenerator:
                 self.bottomRight.x = p.x
             if p.y > self.bottomRight.y:
                 self.bottomRight.y = p.y
-        
-        self.topLeft.Print()
-        self.bottomRight.Print()
 
     def InsertNewSite(self, _newSite):
         currArc = self.rootArc
@@ -150,7 +147,8 @@ class VoronoiGenerator:
         lastArc.next.halfEdge = lastArc.halfEdge
 
     def GetIntersectionPoint(self, _point, _arc, _sweepLine):
-        """
+        """ Checks if a parabola created with focus at _point intersects with _arc
+
         Parameters
         ----------
         _point : Vector
@@ -160,31 +158,53 @@ class VoronoiGenerator:
         _sweepLine : float
             The sweepline
         """
-        leftIntersection = None
-        rightIntersection = None
+        if _arc is None:
+            return None
+
+        leftIntersection = Vector(0.0, 0.0)
+        rightIntersection = Vector(0.0, 0.0)
 
         if _arc.prev is not None:
             leftIntersection = Parabola.GetBreakpoint(_arc.prev, _arc, _point.y)
         if _arc.next is not None:
             rightIntersection = Parabola.GetBreakpoint(_arc, _arc.next, _point.y)
-        if (_arc.prev is not None or leftIntersection is not None) and (_arc.next is not None or rightIntersection is not None):
-            if _point.x >= leftIntersection.x and _point.x <= rightIntersection.x:
-                return Vector(_arc.GetValue(_point.y, _sweepLine), _point.y)   
+        if (_arc.prev is None or _point.x >= leftIntersection.x) and (_arc.next is None or _point.x <= rightIntersection.x):
+            return Vector(_point.x, _arc.GetValue(_point.x, _sweepLine))   
 
         return None 
+
+    def LowestPointOnCircumcircle(self, _vectorA, _vectorB, _vectorC):
+        a = _vectorA
+        b = _vectorB
+        c = _vectorC
+
+        if (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y) > 0:
+            return None
+
+        A = b.x - a.x
+        B = b.y - a.y
+        C = c.x - a.x
+        D = c.y - a.y
+        E = A * (a.x + b.x) + B * (a.y + b.y)
+        F = C * (a.x + c.x) + D * (a.y + c.y)
+        G = 2 * (A * (c.y - b.y) - B * (c.x - b.x))
+
+        if G == 0: 
+            return None
+
+        midpoint = Vector((D * E - B * F) / G, (A * F - C * E) / G)
+        radius = math.sqrt((a.x - midpoint.x) ** 2 + (a.y - midpoint.y) ** 2)
+        return Vector(midpoint.x, midpoint.y + radius)
 
     def CheckForCircleEvents(self, _arc, _newSite):
         if _arc.prev is not None or _arc is not None or _arc.next is not None:
             return
-        if _arc.prev == _arc or _arc.prev == _arc.next or _arc == _arc.next:
-            return
+
+        lowestPoint = self.LowestPointOnCircumcircle(_arc.prev.focus, _arc.focus, _arc.next.focus)
+
+        if lowestPoint.y > _newSite.y:
+            return CircleEvent(lowestPoint, _arc)
             
-        newCircumcircle = Circumcircle(_arc.prev.focus, _arc.focus, _arc.next.focus)
-        newCircumcircle.Generate()
-
-        if newCircumcircle.lowestPoint.y > _newSite.y:
-            return CircleEvent(newCircumcircle, _arc)
-
     def CompleteAllHalfEdges(self):
         self.sweepLine = self.bottomRight.y + (self.bottomRight.y - self.topLeft.y) + (self.bottomRight.x - self.topLeft.x)
 
@@ -193,5 +213,6 @@ class VoronoiGenerator:
             if currArc.halfEdge is not None:
                 if currArc.halfEdge.twin is None:
                     currArc.halfEdge.twin = HalfEdge(Parabola.GetBreakpoint(currArc, currArc.next, self.sweepLine))
-                self.halfEdges.append(currArc.halfEdge)
+                    currArc.halfEdge.twin.twin = currArc.halfEdge
+                    self.halfEdges.append(currArc.halfEdge)
             currArc = currArc.next
