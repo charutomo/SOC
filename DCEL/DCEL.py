@@ -29,9 +29,26 @@ class HalfEdge:
     def __init__(self, _origin):
         self.origin = _origin
         self.twin = None
+        self.incidentFace = None
         self.next = None
         self.prev = None
+
+        self.destination = None
     
+    def CreateTwin(self):
+        if self.next is None:
+            return None
+
+        newHalfEdge = HalfEdge(self.next.origin)
+        newHalfEdge.twin = self
+        newHalfEdge.next = self.prev
+        newHalfEdge.prev = self.next
+
+        newHalfEdge.destination = self.origin
+        self.destination = newHalfEdge.origin
+        
+        return newHalfEdge
+
     def __eq__(self, _other):
         '''
         To check if edges are equivalent
@@ -58,22 +75,6 @@ class HalfEdge:
             return (self.origin.x, self.origin.y, self.next.origin.x, self.next.origin.y)
         else:
             return self.origin.x, self.origin.y
-
-class Edge:
-    """Edge
-
-    An edge is two opposing half edges
-    
-    Attributes
-    ----------
-    _rightHalfEdge: HalfEdge
-        The rightHalfEdge
-    _leftHalfEdge: HalfEdge
-        The leftHalfEdge
-    """
-    def __init__(self):
-        self.rightHalfEdge = None
-        self.leftHalfEdge = None
 
 class Face:
     '''face of DCEL'''
