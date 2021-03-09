@@ -20,6 +20,7 @@ class Screen:
         self.points = []
         self.vertices = []
         self.halfEdges = []
+        self.rootArc = None
         self.complete = False
         self.clock = pygame.time.Clock()
     
@@ -47,6 +48,7 @@ class Screen:
                 surface,
                 pygame.Color(255, 0, 0),
                 pygame.Rect(o.x, o.y, 4.0, 4.0))
+        
         for e in self.halfEdges:
             pygame.draw.line(
                 surface,
@@ -54,15 +56,7 @@ class Screen:
                 e.origin.ToTuple(), 
                 e.twin.origin.ToTuple(), 
                 1)
-            pygame.draw.ellipse(
-                surface,
-                pygame.Color(0, 0, 255),
-                pygame.Rect(e.origin.x, e.origin.y, 4.0, 4.0))
-            pygame.draw.ellipse(
-                surface,
-                pygame.Color(0, 0, 255),
-                pygame.Rect(e.twin.origin.x, e.twin.origin.y, 4.0, 4.0))
-
+                
         pygame.display.update()
 
     def Update(self):
@@ -92,7 +86,7 @@ class Screen:
         for i in range(_resolution):
             pygame.draw.line(
                 _surface,
-                pygame.Color(255, 0, 0),
+                pygame.Color(125, 125, 0),
                 (xPos, _parabola.GetValue(xPos, _directrix)),
                 (xPos + _increment, _parabola.GetValue(xPos + _increment, _directrix)))
             xPos += _increment

@@ -32,20 +32,12 @@ class HalfEdge:
         self.incidentFace = None
         self.next = None
         self.prev = None
-
-        self.destination = None
     
     def CreateTwin(self):
-        if self.next is None:
-            return None
-
-        newHalfEdge = HalfEdge(self.next.origin)
+        newHalfEdge = HalfEdge(None)
         newHalfEdge.twin = self
         newHalfEdge.next = self.prev
         newHalfEdge.prev = self.next
-
-        newHalfEdge.destination = self.origin
-        self.destination = newHalfEdge.origin
         
         return newHalfEdge
 

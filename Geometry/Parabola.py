@@ -36,7 +36,7 @@ class Parabola:
         The y coordinate as a float
         """
 
-        return ((self.focus.x - _x) ** 2 + self.focus.x ** 2 - _directrix ** 2) / (2 * (self.focus.y - _directrix))
+        return ((self.focus.x - _x) ** 2 + self.focus.y ** 2 - _directrix ** 2) / (2 * self.focus.y - 2 * _directrix)
 
     def ValidateParabola(self, _LHS, _RHS):
         """Checks if the length of the parabola is more than a threshold.
@@ -61,7 +61,7 @@ class Parabola:
     # Static Methods
 
     @staticmethod
-    def GetBreakpoint(_parabolaA, _parabolaB, _directrix):
+    def GetBreakpoint(_parabolaA, _parabolaB, _directrix, _leftIntersection):
         '''Gets the intersection between 2 parabolas
 
         Parameters
@@ -100,10 +100,13 @@ class Parabola:
             xA = (-xCoefficient + math.sqrt(discriminant)) / (2 * xSquaredCoefficient)
             xB = (-xCoefficient - math.sqrt(discriminant)) / (2 * xSquaredCoefficient)
 
-            midpoint = Vector.Midpoint(_parabolaA.focus, _parabolaB.focus)
             chosenValue = xB
-            if abs(midpoint.x - xA) < abs(midpoint.x - xB):
-                chosenValue = xA
+            if _leftIntersection:
+                if xA < xB:
+                    chosenValue = xA
+            else:
+                if xA > xB:
+                    chosenValue = xA
 
             result.x = chosenValue
             result.y = ((a.x - result.x) ** 2 + a.y ** 2 - (c ** 2)) / (2 * (a.y - c))
