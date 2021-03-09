@@ -20,7 +20,6 @@ class Screen:
         self.points = []
         self.vertices = []
         self.halfEdges = []
-        self.rootArc = None
         self.complete = False
         self.clock = pygame.time.Clock()
     
@@ -54,7 +53,7 @@ class Screen:
                 surface,
                 pygame.Color(0, 255, 0),
                 e.origin.ToTuple(), 
-                e.twin.origin.ToTuple(), 
+                e.next.origin.ToTuple(), 
                 1)
                 
         pygame.display.update()

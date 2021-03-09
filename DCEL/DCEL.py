@@ -32,14 +32,11 @@ class HalfEdge:
         self.incidentFace = None
         self.next = None
         self.prev = None
-    
-    def CreateTwin(self):
-        newHalfEdge = HalfEdge(None)
-        newHalfEdge.twin = self
-        newHalfEdge.next = self.prev
-        newHalfEdge.prev = self.next
+
         
-        return newHalfEdge
+    
+    def AddNext(self, _next):
+        self.next = _next
 
     def __eq__(self, _other):
         '''

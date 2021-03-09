@@ -21,6 +21,22 @@ class Arc(Parabola):
 
     def __eq__(self, _other):
         return self is _other
+    
+    def Append(self, _other):
+        self.next = _other
+
+        if _other.next is not None: 
+            _other.next.prev = _other
+
+    @staticmethod
+    def Remove(_prev, _toRemove, _next, _eventPosition):
+        newHalfEdge = HalfEdge(_eventPosition) 
+        if _prev is not None:
+            _prev.next = _next
+            _prev.rightHalfEdge.AddNext(newHalfEdge)
+        if _next is not None:
+            _next.prev = _prev
+            _next.leftHalfEdge.AddNext(newHalfEdge)
 
 class VoronoiGenerator:
     """The class used to generate the Voronoi diagram.
@@ -44,9 +60,6 @@ class VoronoiGenerator:
         self.queue = []
         self.halfEdges = []
 
-        self.topLeft = Vector(0.0, 0.0)
-        self.bottomRight = Vector(0.0, 0.0)
-
     def GenerateVoronoi(self, _points):
         self.InitSites(_points)
         
@@ -65,44 +78,25 @@ class VoronoiGenerator:
             elif event.type is EventType.VERTEXEVENT:
                 associatedArc = event.arc
                 
-                if associatedArc.prev is not None:
-                    associatedArc.prev.next = associatedArc.next
-                    associatedArc.prev.rightHalfEdge.twin = HalfEdge(event.position)
-                    associatedArc.prev.rightHalfEdge.twin.next = associatedArc.prev.rightHalfEdge.prev
-                    associatedArc.prev.rightHalfEdge.twin.prev = associatedArc.prev.rightHalfEdge.next
-                
-                if associatedArc.next is not None:
-                    associatedArc.next.prev = associatedArc.prev
-                    associatedArc.next.leftHalfEdge.twin = HalfEdge(event.position)
-                    associatedArc.next.leftHalfEdge.twin.next = associatedArc.prev.leftHalfEdge.prev
-                    associatedArc.next.leftHalfEdge.twin.prev = associatedArc.prev.leftHalfEdge.next
-                
+                Arc.Remove(associatedArc.prev, associatedArc, associatedArc.next, event.position)
+
                 if associatedArc.prev is not None:
                     newEvent = self.CheckForCircleEvents(associatedArc.prev, event.position)
-                    if newEvent is not None: self.queue.append(newEvent)
+                    if newEvent is not None: 
+                        self.queue.append(newEvent)
                 if associatedArc.next is not None:
                     newEvent = self.CheckForCircleEvents(associatedArc.next, event.position)
-                    if newEvent is not None: self.queue.append(newEvent)
+                    if newEvent is not None: 
+                        self.queue.append(newEvent)
             
             self.queue.sort(key=lambda e: e.position.y)
 
-        self.CompleteAllHalfEdges()
-        return self.halfEdges, self.rootArc
+        #self.CompleteAllHalfEdges()
+        return self.halfEdges
 
     def InitSites(self, _points):
         for p in _points:
             self.queue.append(SiteEvent(p))
-
-            if p.x < self.topLeft.x: 
-                self.topLeft.x = p.x 
-            if p.y < self.topLeft.y:
-                self.topLeft.y = p.y
-            if p.x > self.bottomRight.x:
-                self.bottomRight.x = p.x
-            if p.y > self.bottomRight.y:
-                self.bottomRight.y = p.y
-
-            print(p.ToString())
 
     def InsertNewSite(self, _newSite):
         currArc = self.rootArc
@@ -110,9 +104,9 @@ class VoronoiGenerator:
             intersectionPoint = self.GetIntersectionPoint(_newSite, currArc, self.sweepLine)
             
             if intersectionPoint is not None:
-                self.AddToBeachLine(_newSite, currArc, intersectionPoint)
+                currArc.Append(Arc(_newSite, currArc, currArc.next))
                 currArc = currArc.next # Advance the linked list
-                self.AddToBeachLine(currArc.prev.focus, currArc, intersectionPoint)
+                currArc.Append(Arc(currArc.prev.focus, currArc, currArc.next))
                 
                 newEvent = self.CheckForCircleEvents(currArc, _newSite)
                 if newEvent is not None: 
@@ -131,23 +125,7 @@ class VoronoiGenerator:
         lastArc = self.rootArc
         while lastArc.next is not None:
             lastArc = lastArc.next
-        lastArc.next = Arc(_newSite, lastArc, None)
-
-        start = Vector(0.0, 0.0)
-        start.y = self.topLeft.y
-        start.x = (lastArc.next.focus.x + lastArc.focus.x) / 2
-
-    def AddToBeachLine(self, _site, _currArc, _intersectionPoint):
-        newArc = Arc(_site, _currArc, _currArc.next)
-        if _currArc.next is not None:
-            _currArc.next.prev = newArc
-        _currArc.next = newArc
-
-    def DisplayBeachLine(self):
-        currArc = self.rootArc
-        while currArc is not None:
-            print("Focus:", currArc.focus.ToString())
-            currArc = currArc.next
+        lastArc.Append(Arc(_newSite, lastArc, None))
 
     def GetIntersectionPoint(self, _point, _arc, _sweepLine):
         """ Checks if a parabola created with focus at _point intersects with _arc
@@ -161,11 +139,8 @@ class VoronoiGenerator:
         _sweepLine : float
             The sweepline
         """
-        if _arc is None:
-            return None
-
-        if _point == _arc.focus:
-            return None
+        if _arc is None: return None
+        if _point == _arc.focus: return None
 
         leftIntersection = Vector(0.0, 0.0)
         rightIntersection = Vector(0.0, 0.0)
@@ -184,8 +159,7 @@ class VoronoiGenerator:
         b = _vectorB
         c = _vectorC
 
-        if (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y) > 0:
-            return None
+        if (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y) > 0: return None
 
         A = b.x - a.x
         B = b.y - a.y
@@ -195,44 +169,36 @@ class VoronoiGenerator:
         F = C * (a.x + c.x) + D * (a.y + c.y)
         G = 2 * (A * (c.y - b.y) - B * (c.x - b.x))
 
-        if G == 0: 
-            return None
+        if G == 0: return None
 
         midpoint = Vector((D * E - B * F) / G, (A * F - C * E) / G)
         radius = math.sqrt((a.x - midpoint.x) ** 2 + (a.y - midpoint.y) ** 2)
         return Vector(midpoint.x, midpoint.y + radius)
 
     def CheckForCircleEvents(self, _arc, _newSite):
-        if _arc is None:
-            return
-        if _arc.prev is None or _arc.next is None:
-            return
+        if _arc is None: return None
+        if _arc.prev is None or _arc.next is None: return None
 
         lowestPoint = self.LowestPointOnCircumcircle(_arc.prev.focus, _arc.focus, _arc.next.focus)
 
-        if lowestPoint is None:
-            return
+        if lowestPoint is None: return None
+        if lowestPoint.y > _newSite.y: return CircleEvent(lowestPoint, _arc)
 
-        if lowestPoint.y > _newSite.y:
-            return CircleEvent(lowestPoint, _arc)
+        return None
             
     def CompleteAllHalfEdges(self):
-        self.sweepLine = self.bottomRight.y + (self.bottomRight.y - self.topLeft.y) + (self.bottomRight.x - self.topLeft.x)
-
-        self.DisplayBeachLine()
+        self.sweepLine = Settings.SCREEN_HEIGHT
 
         currArc = self.rootArc
         while currArc is not None:
             if currArc.leftHalfEdge is None:
                 currArc.leftHalfEdge = HalfEdge(currArc.rightHalfEdge.origin)
                 #currArc.leftHalfEdge.destination = Parabola.GetBreakpoint(currArc.prev, currArc, self.sweepLine)
-                currArc.leftHalfEdge.twin = currArc.leftHalfEdge.CreateTwin()
                 
                 self.halfEdges.append(currArc.leftHalfEdge)
             if currArc.rightHalfEdge is None:
                 currArc.rightHalfEdge = HalfEdge(currArc.leftHalfEdge.origin)
                 #currArc.rightHalfEdge.destination = Parabola.GetBreakpoint(currArc, currArc.next, self.sweepLine)
-                currArc.rightHalfEdge.twin = currArc.rightHalfEdge.CreateTwin()
                 
                 self.halfEdges.append(currArc.rightHalfEdge)
             

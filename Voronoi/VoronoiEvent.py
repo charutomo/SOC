@@ -52,7 +52,6 @@ class SiteEvent(VoronoiEvent):
             The site that triggers the event
         """
         super().__init__(_site, EventType.SITEEVENT)
-        self.site = _site
 
 class CircleEvent(VoronoiEvent):
     """Circle Event.

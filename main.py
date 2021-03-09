@@ -25,12 +25,11 @@ def main():
     points.sort(key=lambda p: p.y)
 
     voronoiGenerator = VoronoiGenerator()
-    halfEdges, rootArc = voronoiGenerator.GenerateVoronoi(points)
+    halfEdges = voronoiGenerator.GenerateVoronoi(points)
 
     pygame.init()
     screen = Screen()
     screen.points = points
-    screen.rootArc = rootArc
     screen.halfEdges = halfEdges
     screen.Display(Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT)
     screen.Update()
