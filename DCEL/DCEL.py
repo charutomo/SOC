@@ -33,8 +33,6 @@ class HalfEdge:
         self.next = None
         self.prev = None
 
-        
-    
     def AddNext(self, _next):
         self.next = _next
 
@@ -72,7 +70,7 @@ class Face:
    
 class DCEL:
     '''Doubly Connected Edge List'''
-    def __init__(self):
-        self.vertices = []
-        self.edges = []
-        self.faces = []
+    def __init__(self, _vertices, _edges, _faces):
+        self.vertices = _vertices
+        self.edges = _edges
+        self.faces = _faces

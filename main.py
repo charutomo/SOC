@@ -4,6 +4,7 @@ from Geometry.Vector import Vector
 from Geometry.Parabola import Parabola
 from Rendering.Screen import Screen
 from Voronoi.VoronoiGenerator import VoronoiGenerator
+from DCEL.DCEL import DCEL
 import Settings
 import math
 
@@ -25,12 +26,13 @@ def main():
     points.sort(key=lambda p: p.y)
 
     voronoiGenerator = VoronoiGenerator()
-    halfEdges = voronoiGenerator.GenerateVoronoi(points)
+    dcel = voronoiGenerator.GenerateVoronoi(points)
+    print(len(dcel.vertices), len(dcel.edges))
 
     pygame.init()
     screen = Screen()
     screen.points = points
-    screen.halfEdges = halfEdges
+    screen.dcel = dcel
     screen.Display(Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT)
     screen.Update()
     
