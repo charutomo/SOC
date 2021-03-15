@@ -26,15 +26,14 @@ class HalfEdge:
     prev: HalfEdge
         The halfedge before this 
     """
-    def __init__(self, _origin):
+    def __init__(self, _origin, _edges):
         self.origin = _origin
         self.twin = None
         self.incidentFace = None
         self.next = None
         self.prev = None
 
-    def AddNext(self, _next):
-        self.next = _next
+        _edges.append(self)
 
     def __eq__(self, _other):
         '''
@@ -49,7 +48,10 @@ class HalfEdge:
         bool
             True if the origin and destination vertex are equal
         '''
-        return self.origin == _other.origin and self.next.origin == _other.next.origin
+        if self.next is None and _other.next is not None: return False
+        elif self.next is not None and _other.next is None: return False
+        elif self.next is None and _other.next is None: return self.origin == _other.origin
+        else: return self.origin == _other.origin and self.next.origin == _other.next.origin
 
     def Print(self):
         '''Prints edge coefficients

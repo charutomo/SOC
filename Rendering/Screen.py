@@ -20,6 +20,9 @@ class Screen:
         self.points = []
         self.vertices = []
         self.dcel = None
+        self.circles = []
+        self.snapshots = []
+        self.snapshotIndex = 2
         self.complete = False
         self.clock = pygame.time.Clock()
     
@@ -47,14 +50,7 @@ class Screen:
                 surface,
                 pygame.Color(255, 0, 0),
                 pygame.Rect(o.x, o.y, 4.0, 4.0))
-        
         for e in self.dcel.edges:
-            """
-            pygame.draw.ellipse(
-                surface,
-                pygame.Color(0, 0, 255),
-                pygame.Rect(e.origin.x, e.origin.y, 4.0, 4.0))
-            """
             if e.next is not None:
                 pygame.draw.line(
                     surface,
@@ -62,14 +58,21 @@ class Screen:
                     e.origin.ToTuple(), 
                     e.next.origin.ToTuple(), 
                     1)
-                
+        
+        for c in self.circles:
+            self.DrawCircle(c, surface)
+
+        pygame.draw.line(surface, pygame.Color(125, 125, 0), (0, self.snapshots[self.snapshotIndex].directrix), (Settings.SCREEN_WIDTH, self.snapshots[self.snapshotIndex].directrix))
+        for p in self.snapshots[self.snapshotIndex].parabolas:
+            self.DrawParabola(p, surface, 1000, 1, self.snapshots[self.snapshotIndex].directrix)
+        
         pygame.display.update()
 
     def Update(self):
         """Update Function"""
         while not self.complete:
             self.Draw()
-
+            
             self.clock.tick(60)
 
     def DrawParabola(self, _parabola, _surface, _resolution, _increment, _directrix):
@@ -97,7 +100,7 @@ class Screen:
                 (xPos + _increment, _parabola.GetValue(xPos + _increment, _directrix)))
             xPos += _increment
 
-    def DrawCircle(self, _circle, _surface, _color = pygame.Color(0, 255, 0)):
+    def DrawCircle(self, _circle, _surface, _color = pygame.Color(0, 0, 255)):
         '''Draws the circumcircle onto a pygame surface
 
         Parameters
@@ -128,4 +131,3 @@ class Screen:
             Settings.CIRCLE_BORDER_WIDTH
         )
 
-    
