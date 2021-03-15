@@ -10,49 +10,41 @@
 [@KieranNg](https://github.com/KieranNg) and I are Mathematical Science students from NTU under SPMS.
 We are working on Space Optimisation: A qualitative project on how to isolate patients in a given setting for SCOPE Odyssey. We are trying to optimize a given ward space and equally divide them into subsections.<br/>
 <br/>
+
+:warning:![WIP](https://img.shields.io/badge/Status-Work%20In%20Progress-red) :warning: <br/>
 ![PyPi Python Versions](https://img.shields.io/pypi/pyversions/yt2mp3.svg)
-:warning:![WIP](https://img.shields.io/badge/Status-Work%20In%20Progress-red) :warning: 
 
 <br/>
 
 
 
 ## Content of Repository
-Listed below are the current main features of SOC:<br/>
-
-
-`SOC`
+Listed below are the current main features of `SOC`:<br/>
+<br/>
 
 * README.MD
-* LICENCE
-* .gitignore
-
- 
-* main.py
-* Settings.py
-* SOC.py
+* LICENSE
+* main
+* Settings
 * VoronoiEvent
-    * BeachLine.py
-    * VoronoiEvent.py
-    * VoronoiGenerator.py
+    * VoronoiEvent
+    * VoronoiGenerator
 
 * Rendering
-    * Screen.py
+    * Screen
    
 * Geometry
-    * Circumcircle.py
-    * Parabola.py
-    * Vector.py
+    * Parabola
+    * Vector
    
 * Data Structures
-    * BST.py
-    * Queue.py
+    * Priority Queue Binary Search Tree
+
+* Doubly Connected Edge List
 
 * SOC Slides
 
-
-
-
+<br/>
 
 ## Slides and Report
 ### Slides
