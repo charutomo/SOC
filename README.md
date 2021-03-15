@@ -11,7 +11,7 @@
 We are working on Space Optimisation: A qualitative project on how to isolate patients in a given setting for SCOPE Odyssey. We are trying to optimize a given ward space and equally divide them into subsections.<br/>
 <br/>
 
-:warning:![WIP](https://img.shields.io/badge/Status-Work%20In%20Progress-red) :warning: <br/>
+:warning:![WIP](https://img.shields.io/badge/Status-Work%20In%20Progress-red) :warning:
 ![PyPi Python Versions](https://img.shields.io/pypi/pyversions/yt2mp3.svg)
 
 <br/>
