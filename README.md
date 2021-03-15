@@ -10,7 +10,8 @@
 [@KieranNg](https://github.com/KieranNg) and I are Mathematical Science students from NTU under SPMS.
 We are working on Space Optimisation: A qualitative project on how to isolate patients in a given setting for SCOPE Odyssey. We are trying to optimize a given ward space and equally divide them into subsections.<br/>
 <br/>
-:warning:[![WIP](https://img.shields.io/badge/Status-Work%20In%20Progress-red)] :warning: 
+![PyPi Python Versions](https://img.shields.io/pypi/pyversions/yt2mp3.svg)
+:warning:![WIP](https://img.shields.io/badge/Status-Work%20In%20Progress-red) :warning: 
 
 <br/>
 
@@ -19,38 +20,38 @@ We are working on Space Optimisation: A qualitative project on how to isolate pa
 ## Content of Repository
 Listed below are the current main features of SOC:<br/>
 
-```
-SOC
 
-─ README.MD
-─ LICENCE
-─ .gitignore
+`SOC`
+
+* README.MD
+* LICENCE
+* .gitignore
 
  
-─ main.py
-─ Settings.py
-─ SOC.py
-─ Voronoi
-      ├── BeachLine.py
-      ├── VoronoiEvent.py
-      └── VoronoiGenerator.py
+* main.py
+* Settings.py
+* SOC.py
+* VoronoiEvent
+    * BeachLine.py
+    * VoronoiEvent.py
+    * VoronoiGenerator.py
 
-─ Rendering
-      └── Screen.py
+* Rendering
+    * Screen.py
    
-─ Geometry
-      ├── Circumcircle.py
-      ├── Parabola.py
-      └── Vector.py
+* Geometry
+    * Circumcircle.py
+    * Parabola.py
+    * Vector.py
    
-─ Data Structures
-      ├── BST.py
-      └── Queue.py
+* Data Structures
+    * BST.py
+    * Queue.py
 
-─ SOC Slides
+* SOC Slides
 
-```
-[![PyPi Python Versions](https://img.shields.io/pypi/pyversions/yt2mp3.svg)]
+
+
 
 
 ## Slides and Report
