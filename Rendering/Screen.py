@@ -49,10 +49,12 @@ class Screen:
                 pygame.Rect(o.x, o.y, 4.0, 4.0))
         
         for e in self.dcel.edges:
+            """
             pygame.draw.ellipse(
                 surface,
                 pygame.Color(0, 0, 255),
                 pygame.Rect(e.origin.x, e.origin.y, 4.0, 4.0))
+            """
             if e.next is not None:
                 pygame.draw.line(
                     surface,

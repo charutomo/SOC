@@ -191,7 +191,7 @@ class VoronoiGenerator:
         b = _vectorB
         c = _vectorC
 
-        if (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y) > 0: return None
+        #if (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y) > 0: return None
 
         A = b.x - a.x
         B = b.y - a.y
@@ -212,14 +212,30 @@ class VoronoiGenerator:
 
         currArc = self.rootArc
         while currArc is not None:
-            leftEndVertex = Parabola.GetBreakpoint(currArc.prev, currArc, self.sweepLine, True)
-            if leftEndVertex is not None:
-                leftHalfEdgeNext = HalfEdge(leftEndVertex)
-                currArc.leftHalfEdge.next = leftHalfEdgeNext
+            if currArc.leftHalfEdge is not None:
+                if currArc.leftHalfEdge.next is None:
+                    leftEndVertex = Parabola.GetBreakpoint(currArc.prev, currArc, self.sweepLine, True)
+                    if leftEndVertex is not None:
+                        leftHalfEdgeNext = HalfEdge(leftEndVertex)
+                        currArc.leftHalfEdge.next = leftHalfEdgeNext
 
-            rightEndVertex = Parabola.GetBreakpoint(currArc, currArc.next, self.sweepLine, False)
-            if rightEndVertex is not None:
-                rightHalfEdgeNext = HalfEdge(rightEndVertex)
-                currArc.rightHalfEdge.next = rightHalfEdgeNext
+            if currArc.rightHalfEdge is not None:
+                if currArc.rightHalfEdge.next is None:
+                    rightEndVertex = Parabola.GetBreakpoint(currArc, currArc.next, self.sweepLine, False)
+                    if rightEndVertex is not None:
+                        rightHalfEdgeNext = HalfEdge(rightEndVertex)
+                        currArc.rightHalfEdge.next = rightHalfEdgeNext
 
             currArc = currArc.next
+    
+    def CullEdges(self):
+        index = 0
+
+        while True:
+            if index == len(self.halfEdges):
+                break
+            
+            currHalfEdge = self.halfEdges[index]
+
+            index++
+         
