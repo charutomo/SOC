@@ -64,7 +64,7 @@ class CircleEvent(VoronoiEvent):
     arc: Arc
         The associated Arc 
     """
-    def __init__(self, _lowestPoint, _arc):
+    def __init__(self, _lowestPoint, _midPoint, _arc):
         """Constructor 
         
         Parameters
@@ -73,4 +73,5 @@ class CircleEvent(VoronoiEvent):
             The associated Arc
         """
         super().__init__(_lowestPoint, EventType.VERTEXEVENT)
+        self.midPoint = _midPoint
         self.arc = _arc

@@ -77,6 +77,8 @@ class Parabola:
         -------
         The intersecting point as a Vector
         '''
+        if _parabolaA == None or _parabolaB == None: return None
+
         result = Vector(0.0, 0.0)
 
         if _parabolaB.focus.y == _directrix:
