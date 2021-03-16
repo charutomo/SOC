@@ -22,7 +22,7 @@ class Screen:
         self.dcel = None
         self.circles = []
         self.snapshots = []
-        self.snapshotIndex = 2
+        self.snapshotIndex = 1
         self.complete = False
         self.clock = pygame.time.Clock()
     
@@ -58,6 +58,11 @@ class Screen:
                     e.origin.ToTuple(), 
                     e.next.origin.ToTuple(), 
                     1)
+        for v in self.dcel.vertices:
+            pygame.draw.ellipse(
+                surface,
+                pygame.Color(255, 125, 125),
+                pygame.Rect(v.x, v.y, 4.0, 4.0))
         
         for c in self.circles:
             self.DrawCircle(c, surface)
