@@ -9,6 +9,7 @@ from DCEL.DCEL import DCEL
 
 class Room(DCEL):
     def __init__(self,pathwaywidth):
+        super().__init__()
         self.width = pathwaywidth
     def allocation(self):
         '''
@@ -19,7 +20,8 @@ class Room(DCEL):
         returns DCEL with the dimensions and division of the voronoi diagram
 
         '''
-        
+        for i in self.edges:
+            self.edges += self.width 
         
         
         
