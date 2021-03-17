@@ -22,8 +22,8 @@ We are working on Space Optimisation: A qualitative project on how to isolate pa
 Listed below are the current main features of `SOC`:<br/>
 <br/>
 
-* README.MD
-* LICENSE
+* [README.MD](https://github.com/charutomo/SOC/blob/main/README.md)
+* [License](https://github.com/charutomo/SOC/blob/main/LICENSE)
 * main
 * Settings
 * VoronoiEvent
