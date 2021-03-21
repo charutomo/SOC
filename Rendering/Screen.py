@@ -122,12 +122,14 @@ class Screen:
             _color,
             pygame.Rect(_circle.midpoint.x, _circle.midpoint.y, Settings.POINT_WIDTH, Settings.POINT_WIDTH)
         )
+        """
         pygame.draw.line(
             pygame.display.get_surface(),
             _color,
             _circle.midpoint.ToTuple(),
             _circle.lowestPoint.ToTuple()
         )
+        """
         pygame.draw.circle(
             pygame.display.get_surface(),
             _color,

@@ -16,8 +16,8 @@ def GenerateRandomPoints(_length): #generate list of points, parameter how vetso
     points = [Vector] * _length
     for i in range(len(points)):
         points[i] = Vector(
-            _x = math.floor(random.random() * Settings.SCREEN_WIDTH),
-            _y = math.floor(random.random() * Settings.SCREEN_HEIGHT))
+            _x = random.random() * Settings.SCREEN_WIDTH,
+            _y = random.random() * Settings.SCREEN_HEIGHT)
     return points
     
 def GenerateFixedPoints():
@@ -37,13 +37,14 @@ def main():
 
     voronoiGenerator = VoronoiGenerator()
     dcel, circles, snapshots = voronoiGenerator.GenerateVoronoi(points)
-    #print(len(dcel.vertices), len(dcel.edges))
+    print(len(dcel.vertices), len(dcel.edges))
 
     pygame.init()
     screen = Screen()
     screen.points = points
     screen.circles = circles
     screen.snapshots = snapshots
+    print(snapshots[1].Print())
     screen.dcel = dcel
     screen.Display(Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT)
     screen.Update()
