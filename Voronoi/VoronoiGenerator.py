@@ -25,15 +25,6 @@ class Arc(Parabola):
             _other.leftHalfEdge = self.rightHalfEdge
         else:
             _other.leftHalfEdge = HalfEdge(_breakpoint, _edges)
-    
-    def Prepend(self, _other, _breakpoint, _edges):
-        self.prev = _other
-        _other.next = self
-        if self.leftHalfEdge is None:
-            self.leftHalfEdge = HalfEdge(_breakpoint, _edges)
-            _other.rightHalfEdge = self.leftHalfEdge
-        else:
-            _other.rightHalfEdge = HalfEdge(_breakpoint, _edges)
 
     def Size(self):
         currArc = self
@@ -149,26 +140,14 @@ class VoronoiGenerator:
             intersectionPoint = self.GetLowestIntersectionPoint(_newSite, self.sweepLine)
             
             if intersectionPoint is not None:
-                if _newSite.x > currArc.focus.x:
-                    currArc.Append(Arc(_newSite, currArc, currArc.next), intersectionPoint, self.halfEdges)
+                currArc.Append(Arc(_newSite, currArc, currArc.next), intersectionPoint, self.halfEdges)
 
-                    currArc = currArc.next # Advance the linked list
+                currArc = currArc.next # Advance the linked list
 
-                    if currArc.next is not None:
-                        duplicate = Arc(currArc.prev.focus, currArc, currArc.next)
-                        currArc.Append(duplicate, intersectionPoint, self.halfEdges)
-                
-                else:
-                    currArc.Prepend(Arc(_newSite, currArc.prev, currArc), intersectionPoint, self.halfEdges)
+                if currArc.next is not None:
+                    duplicate = Arc(currArc.prev.focus, currArc, currArc.next)
+                    currArc.Append(duplicate, intersectionPoint, self.halfEdges)
 
-                    currArc = currArc.prev # Advance the linked list
-
-                    if currArc.prev is not None:
-                        duplicate = Arc(currArc.next.focus, currArc.prev, currArc)
-                        currArc.Prepend(duplicate, intersectionPoint, self.halfEdges)
-                    
-                    self.rootArc = Arc.Backtrack(self.rootArc)
-                
                 self.CheckForCircleEvents(currArc, self.sweepLine)
                 self.CheckForCircleEvents(currArc.prev, self.sweepLine)
                 self.CheckForCircleEvents(currArc.next, self.sweepLine)
@@ -310,7 +289,6 @@ class VoronoiGenerator:
                 index += 1     
 
         print("Removed", str(previousCount - len(self.halfEdges)), "halfedges.")
-            
             
 class Circumcircle:
     """DEBUG PURPOSES ONLY"""

@@ -85,6 +85,8 @@ class Parabola:
             return _parabolaB.focus
         elif _parabolaA.focus.y == _directrix:
             return _parabolaA.focus
+        elif _parabolaA.focus.y == _parabolaB.focus.y:
+            return Vector((_parabolaA.focus.x + _parabolaB.focus.x) / 2.0, _parabolaA.focus.y)
         else:
             a = Vector(_parabolaA.focus.x, _parabolaA.focus.y)
             b = Vector(_parabolaB.focus.x, _parabolaB.focus.y)
