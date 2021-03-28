@@ -1,12 +1,12 @@
-import pygame.display
+import sys
 import math
+import copy
+import pygame.display
 import Settings
-from Geometry.Vector import Vector
-from Geometry.Parabola import Parabola
 
 class Screen:
     """Renderer
-    
+
     Attributes
     ----------
     complete: Boolean
@@ -14,19 +14,14 @@ class Screen:
     clock: Clock
         The clock used to update
     """
-    def __init__(self):
+    def __init__(self, _voronoi_generator):
         """Constructor"""
         pygame.display.init()
-        self.points = []
-        self.vertices = []
-        self.dcel = None
-        self.circles = []
-        self.snapshots = []
-        self.snapshotIndex = 1
+        self.voronoi_painter = VoronoiPainter(_voronoi_generator)
         self.complete = False
         self.clock = pygame.time.Clock()
-    
-    def Display(self, _width, _height, _caption = "Renderer"):
+
+    def display(self, _width, _height, _caption = "Renderer"):
         """Display Function
 
         Parameters
@@ -41,46 +36,101 @@ class Screen:
         pygame.display.set_mode((_width, _height))
         pygame.display.set_caption(_caption)
 
-    def Draw(self):
-        """Draw Function"""
+    def update(self):
+        """Update Function"""
+        self.voronoi_painter.draw_voronoi()
+
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT or \
+                (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RIGHT or event.key == pygame.K_UP:
+                        self.voronoi_painter.next()
+                    if event.key == pygame.K_LEFT or event.key == pygame.K_DOWN:
+                        self.voronoi_painter.prev()
+
+            pygame.display.update()
+            self.clock.tick(60)
+
+class VoronoiPainter:
+    def __init__(self, _voronoi_generator):
+        self.voronoi_generator = _voronoi_generator
+        self.states = []
+        self.count = 0
+
+    def progress(self):
+        self.voronoi_generator.handle_next_event()
+        self.states.append([
+            copy.copy(self.voronoi_generator.root_arc),
+            copy.copy(self.voronoi_generator.edges),
+            copy.copy(self.voronoi_generator.vertices),
+            self.voronoi_generator.sweep_line + Settings.SWEEP_LINE_OFFSET])
+
+    def complete(self):
+        self.voronoi_generator.complete_all_edges()
+        self.states.append([
+            copy.copy(self.voronoi_generator.root_arc),
+            copy.copy(self.voronoi_generator.edges),
+            copy.copy(self.voronoi_generator.vertices),
+            self.voronoi_generator.sweep_line + Settings.SWEEP_LINE_OFFSET])
+
+    def run(self):
+        while self.voronoi_generator.have_events():
+            self.progress()
+        self.complete()
+
+    def next(self):
+        if self.count < len(self.states) - 1:
+            self.count += 1
+            self.draw_voronoi()
+
+    def prev(self):
+        if self.count > 0:
+            self.count -= 1
+            self.draw_voronoi()
+
+    def draw_voronoi(self):
         surface = pygame.display.get_surface()
-        
-        for o in self.points:
-            pygame.draw.ellipse(
-                surface,
-                pygame.Color(255, 0, 0),
-                pygame.Rect(o.x, o.y, 4.0, 4.0))
-        for e in self.dcel.edges:
-            if e.next is not None:
+        curr_state = self.states[self.count]
+
+        surface.fill(pygame.Color(0, 0, 0))
+
+        curr_arc = curr_state[0]
+        while curr_arc is not None:
+            self.draw_parabola(curr_arc, surface, 1000, 1, curr_state[3])
+            curr_arc = curr_arc.next
+
+        for edge in curr_state[1]:
+            if edge.next is not None:
                 pygame.draw.line(
                     surface,
                     pygame.Color(0, 255, 0),
-                    e.origin.ToTuple(), 
-                    e.next.origin.ToTuple(), 
+                    edge.origin.ToTuple(),
+                    edge.next.origin.ToTuple(),
                     1)
-        for v in self.dcel.vertices:
+
+        for vertex in curr_state[2]:
             pygame.draw.ellipse(
                 surface,
                 pygame.Color(255, 125, 125),
-                pygame.Rect(v.x, v.y, 4.0, 4.0))
-        
-        for c in self.circles:
-            self.DrawCircle(c, surface)
+                pygame.Rect(vertex.x, vertex.y, 4.0, 4.0))
 
-        pygame.draw.line(surface, pygame.Color(125, 125, 0), (0, self.snapshots[self.snapshotIndex].directrix), (Settings.SCREEN_WIDTH, self.snapshots[self.snapshotIndex].directrix))
-        for p in self.snapshots[self.snapshotIndex].parabolas:
-            self.DrawParabola(p, surface, 1000, 1, self.snapshots[self.snapshotIndex].directrix)
-        
-        pygame.display.update()
+        pygame.draw.line(surface,
+            pygame.Color(100, 100, 100),
+            (0, curr_state[3]),
+            (Settings.SCREEN_WIDTH, curr_state[3])
+            )
 
-    def Update(self):
-        """Update Function"""
-        while not self.complete:
-            self.Draw()
-            
-            self.clock.tick(60)
+        for point in self.voronoi_generator.points:
+            pygame.draw.ellipse(
+                surface,
+                pygame.Color(255, 0, 0),
+                pygame.Rect(point.x, point.y, 4.0, 4.0))
 
-    def DrawParabola(self, _parabola, _surface, _resolution, _increment, _directrix):
+    def draw_parabola(self, _parabola, _surface, _resolution, _increment, _directrix):
         '''Draws the parabola onto a pygame surface
 
         Parameters
@@ -104,35 +154,3 @@ class Screen:
                 (xPos, _parabola.GetValue(xPos, _directrix)),
                 (xPos + _increment, _parabola.GetValue(xPos + _increment, _directrix)))
             xPos += _increment
-
-    def DrawCircle(self, _circle, _surface, _color = pygame.Color(0, 0, 255)):
-        '''Draws the circumcircle onto a pygame surface
-
-        Parameters
-        ----------
-        _circle: Circle
-            The circle to draw
-        _surface: Surface
-            The surface to draw on
-        _color: Color, Optional
-            The color of the circle
-        '''
-        pygame.draw.ellipse(
-            pygame.display.get_surface(),
-            _color,
-            pygame.Rect(_circle.midpoint.x, _circle.midpoint.y, Settings.POINT_WIDTH, Settings.POINT_WIDTH)
-        )
-        pygame.draw.line(
-            pygame.display.get_surface(),
-            _color,
-            _circle.midpoint.ToTuple(),
-            _circle.lowestPoint.ToTuple()
-        )
-        pygame.draw.circle(
-            pygame.display.get_surface(),
-            _color,
-            _circle.midpoint.ToTuple(),
-            _circle.radius,
-            Settings.CIRCLE_BORDER_WIDTH
-        )
-

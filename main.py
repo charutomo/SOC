@@ -1,12 +1,10 @@
-import pygame
+import math
 import random
+import pygame
 from Geometry.Vector import Vector
-from Geometry.Parabola import Parabola
 from Rendering.Screen import Screen
 from Voronoi.VoronoiGenerator import VoronoiGenerator
-from DCEL.DCEL import DCEL
 import Settings
-import math
 
 # Note that this is a linting error not a program error
 # pylint: disable=no-member
@@ -31,22 +29,17 @@ def GenerateFixedPoints():
 def main():
     print("Main")
 
-    points = GenerateRandomPoints(Settings.NUMBER_OF_POINTS)
-    #points = GenerateFixedPoints()
+    #points = GenerateRandomPoints(Settings.NUMBER_OF_POINTS)
+    points = GenerateFixedPoints()
     points.sort(key=lambda p: p.y)
 
-    voronoiGenerator = VoronoiGenerator()
-    dcel, circles, snapshots = voronoiGenerator.GenerateVoronoi(points)
-    #print(len(dcel.vertices), len(dcel.edges))
+    voronoi_generator = VoronoiGenerator(points)
 
     pygame.init()
-    screen = Screen()
-    screen.points = points
-    screen.circles = circles
-    screen.snapshots = snapshots
-    screen.dcel = dcel
-    screen.Display(Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT)
-    screen.Update()
-    
+    screen = Screen(voronoi_generator)
+    screen.voronoi_painter.run()
+    screen.display(Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT)
+    screen.update()
+
 if __name__ == "__main__":
     main()
