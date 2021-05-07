@@ -43,9 +43,9 @@ Listed below are the current main features of `SOC`:<br/>
 * [Doubly Connected Edge List](https://github.com/charutomo/SOC/tree/main/DCEL)
     * [DCEL](https://github.com/charutomo/SOC/blob/main/DCEL/DCEL.py)
 
-* [Report and Slides]
-    *[Report](https://github.com/charutomo/SOC/blob/main/Report%20and%20Slides/Report%20SOC.pdf)
-    *[Slides](https://github.com/charutomo/SOC/blob/main/Report%20and%20Slides/Slides%20SOC.pdf)
+* [Report and Slides](https://github.com/charutomo/SOC/tree/main/Report%20and%20Slides)
+    * [Report](https://github.com/charutomo/SOC/blob/main/Report%20and%20Slides/Report%20SOC.pdf)
+    * [Slides](https://github.com/charutomo/SOC/blob/main/Report%20and%20Slides/Slides%20SOC.pdf)
 
 <br/>
 
