@@ -10,12 +10,12 @@ import Settings
 # pylint: disable=no-member
 
 # There might be a possible error if _x is 0
-def GenerateRandomPoints(_length): #generate list of points, parameter how vetsors you want to generate
+def GenerateRandomPoints(_length): #generate list of points, parameter determines how mant vectors you want to generate
     points = [Vector] * _length
     for i in range(len(points)):
         points[i] = Vector(
-            _x = math.floor(random.random() * Settings.SCREEN_WIDTH),
-            _y = math.floor(random.random() * Settings.SCREEN_HEIGHT))
+            math.floor(random.random() * Settings.SCREEN_WIDTH),
+            math.floor(random.random() * Settings.SCREEN_HEIGHT))
     return points
     
 def GenerateFixedPoints():
@@ -29,8 +29,8 @@ def GenerateFixedPoints():
 def main():
     print("Main")
 
-    #points = GenerateRandomPoints(Settings.NUMBER_OF_POINTS)
-    points = GenerateFixedPoints()
+    points = GenerateRandomPoints(Settings.NUMBER_OF_POINTS)
+    #points = GenerateFixedPoints()
     points.sort(key=lambda p: p.y)
 
     voronoi_generator = VoronoiGenerator(points)

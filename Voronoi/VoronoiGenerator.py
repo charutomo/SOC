@@ -1,3 +1,4 @@
+from DCEL.BST import BeachLine
 import math
 from Geometry.Vector import Vector
 from Geometry.Parabola import Parabola
@@ -6,72 +7,13 @@ from DCEL.DCEL import (HalfEdge, DCEL)
 import Settings
 
 class Arc(Parabola):
-    def __init__(self, _site, _prev, _next):
+    def __init__(self, _site):
         super().__init__(_site)
-        self.prev = _prev
-        self.next = _next
         self.left_half_edge = None
         self.right_half_edge = None
 
     def __eq__(self, _other):
         return id(self) == id(_other)
-
-    def append(self, _other, _breakpoint, _edges):
-        self.next = _other
-
-        if self.right_half_edge is None:
-            self.right_half_edge = HalfEdge(_breakpoint, _edges)
-            _other.left_half_edge = self.right_half_edge
-        else:
-            _other.left_half_edge = HalfEdge(_breakpoint, _edges)
-
-        if _other.next is not None:
-            _other.next.prev = _other
-
-            if _other.next.left_half_edge is None:
-                _other.next.left_half_edge = HalfEdge(_breakpoint, _edges)
-                _other.right_half_edge = _other.next.left_half_edge
-            else:
-                _other.right_half_edge = HalfEdge(_breakpoint, _edges)
-
-    def size(self):
-        curr_arc = self
-        count = 1
-
-        while curr_arc is not None:
-            count += 1
-            curr_arc = curr_arc.next
-
-        return count
-
-    @staticmethod
-    def remove(_prev, _to_remove, _next, _event_position, _edges):
-        new_half_edge = HalfEdge(_event_position, _edges)
-        if _prev is not None:
-            _prev.next = _next
-            _prev.right_half_edge.next = new_half_edge
-            _prev.right_half_edge = new_half_edge
-        if _next is not None:
-            _next.prev = _prev
-            _next.left_half_edge.next = new_half_edge
-            _next.left_half_edge = new_half_edge
-
-    @staticmethod
-    def get_last(_root):
-        curr_arc = _root
-        while curr_arc.next is not None:
-            curr_arc = curr_arc.next
-        return curr_arc
-
-    @staticmethod
-    def as_array(_root):
-        array = []
-        curr_arc = _root
-        while curr_arc is not None:
-            array.append(curr_arc)
-            curr_arc = curr_arc.next
-
-        return array
 
 class VoronoiGenerator:
     """The class used to generate the Voronoi diagram.
@@ -91,7 +33,7 @@ class VoronoiGenerator:
     """
     def __init__(self, _points):
         self.sweep_line = 0.0
-        self.root_arc = None
+        self.beach_line = BeachLine()
         self.points = _points
         self.queue = self.init_sites(_points)
         self.edges = []
@@ -115,10 +57,7 @@ class VoronoiGenerator:
         if event.type is EventType.SITE_EVENT:
             new_site = event.position
 
-            if self.root_arc is None:
-                self.root_arc = Arc(new_site, None, None)
-                return
-
+            self.beach_line.append(Arc(new_site), self.sweep_line)
             self.insert_new_site(new_site)
         elif event.type is EventType.VERTEX_EVENT:
             associated_arc = event.arc
@@ -175,7 +114,7 @@ class VoronoiGenerator:
         last_arc = Arc.get_last(self.root_arc)
         new_arc = Arc(_new_site, last_arc, None)
         last_arc.Append(new_arc,
-            Parabola.GetBreakpoint(last_arc, new_arc, self.sweep_line, True),
+            Parabola.GetBreakpoint(last_arc, new_arc, self.sweep_line),
             self.edges)
 
     def get_lowest_intersection_point(self, _point, _sweep_line):
@@ -216,9 +155,9 @@ class VoronoiGenerator:
         right_intersection = Vector(0.0, 0.0)
 
         if _arc.prev is not None:
-            left_intersection = Parabola.GetBreakpoint(_arc.prev, _arc, _point.y, True)
+            left_intersection = Parabola.GetBreakpoint(_arc.prev, _arc, _point.y)
         if _arc.next is not None:
-            right_intersection = Parabola.GetBreakpoint(_arc, _arc.next, _point.y, False)
+            right_intersection = Parabola.GetBreakpoint(_arc, _arc.next, _point.y)
         if (_arc.prev is None or _point.x >= left_intersection.x) and \
            (_arc.next is None or _point.x <= right_intersection.x):
             return Vector(_point.x, _arc.GetValue(_point.x, _sweep_line))
@@ -278,8 +217,7 @@ class VoronoiGenerator:
                     left_end_vertex = Parabola.GetBreakpoint(
                         curr_arc.prev,
                         curr_arc,
-                        self.sweep_line,
-                        True)
+                        self.sweep_line)
                     if left_end_vertex is not None:
                         next_edge = HalfEdge(left_end_vertex, self.edges)
                         curr_arc.left_half_edge.next = next_edge
@@ -289,8 +227,7 @@ class VoronoiGenerator:
                     right_end_vertex = Parabola.GetBreakpoint(
                         curr_arc,
                         curr_arc.next,
-                        self.sweep_line,
-                        False)
+                        self.sweep_line)
                     if right_end_vertex is not None:
                         next_edge = HalfEdge(right_end_vertex, self.edges)
                         curr_arc.right_half_edge.next = next_edge

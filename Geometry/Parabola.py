@@ -61,7 +61,7 @@ class Parabola:
     # Static Methods
 
     @staticmethod
-    def GetBreakpoint(_parabolaA, _parabolaB, _directrix, _leftIntersection):
+    def GetBreakpoint(_parabolaA, _parabolaB, _directrix):
         '''Gets the intersection between 2 parabolas
 
         Parameters
@@ -101,17 +101,6 @@ class Parabola:
 
             discriminant = xCoefficient ** 2 - 4 * xSquaredCoefficient * constantValue
 
-            xA = (-xCoefficient + math.sqrt(discriminant)) / (2 * xSquaredCoefficient)
-            xB = (-xCoefficient - math.sqrt(discriminant)) / (2 * xSquaredCoefficient)
-
-            chosenValue = xB
-            if _leftIntersection:
-                if xA < xB:
-                    chosenValue = xA
-            else:
-                if xA > xB:
-                    chosenValue = xA
-
-            result.x = chosenValue
+            result.x = (-xCoefficient - math.sqrt(discriminant)) / (2 * xSquaredCoefficient)
             result.y = ((a.x - result.x) ** 2 + a.y ** 2 - (c ** 2)) / (2 * (a.y - c))
             return result
