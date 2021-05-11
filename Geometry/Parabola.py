@@ -61,7 +61,7 @@ class Parabola:
     # Static Methods
 
     @staticmethod
-    def GetBreakpoint(_parabolaA, _parabolaB, _directrix):
+    def get_breakpoint(site_a, site_b, directrix):
         '''Gets the intersection between 2 parabolas
 
         Parameters
@@ -75,22 +75,21 @@ class Parabola:
 
         Returns
         -------
-        The intersecting point as a Vector
+        The intersecting points as as Vector
         '''
-        if _parabolaA == None or _parabolaB == None: return None
+        if site_a is None or site_b is None:
+            return None
 
-        result = Vector(0.0, 0.0)
-
-        if _parabolaB.focus.y == _directrix:
-            return _parabolaB.focus
-        elif _parabolaA.focus.y == _directrix:
-            return _parabolaA.focus
-        elif _parabolaA.focus.y == _parabolaB.focus.y:
-            return Vector((_parabolaA.focus.x + _parabolaB.focus.x) / 2.0, _parabolaA.focus.y)
+        if site_b.y == directrix:
+            return site_b
+        elif site_a.y == directrix:
+            return site_a
+        elif site_a.y == site_b.y:
+            return Vector((site_a.x + site_b.x) / 2.0, site_a.y)
         else:
-            a = Vector(_parabolaA.focus.x, _parabolaA.focus.y)
-            b = Vector(_parabolaB.focus.x, _parabolaB.focus.y)
-            c = _directrix
+            a = Vector(site_a.x, site_a.y)
+            b = Vector(site_b.x, site_b.y)
+            c = directrix
 
             xSquaredCoefficient = b.y - a.y
             xCoefficient = 2 * (-a.x * b.y + a.x * c + b.x * a.y - b.x * c)
@@ -101,6 +100,12 @@ class Parabola:
 
             discriminant = xCoefficient ** 2 - 4 * xSquaredCoefficient * constantValue
 
-            result.x = (-xCoefficient - math.sqrt(discriminant)) / (2 * xSquaredCoefficient)
-            result.y = ((a.x - result.x) ** 2 + a.y ** 2 - (c ** 2)) / (2 * (a.y - c))
-            return result
+            xA = (-xCoefficient - math.sqrt(discriminant)) / (2 * xSquaredCoefficient)
+            yA = ((a.x - xA) ** 2 + a.y ** 2 - (c ** 2)) / (2 * (a.y - c))
+            xB = (-xCoefficient + math.sqrt(discriminant)) / (2 * xSquaredCoefficient)
+            yB = ((a.x - xB) ** 2 + a.y ** 2 - (c ** 2)) / (2 * (a.y - c))
+
+            if xB > site_a.x and xB < site_b.x:
+                return Vector(xB, yB)
+            else:
+                return Vector(xA, yA)

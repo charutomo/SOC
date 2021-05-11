@@ -1,17 +1,40 @@
 from Geometry.Parabola import Parabola
 
-class BinarySeachTree():
-    def __init__(self):
-        self.root = None
-
 class Node():
     def __init__(self, content):
         self.content = content
-        self.left_child = None
-        self.right_child = None
+        self._left_child = None
+        self._right_child = None
+
+    @property
+    def left_child(self):
+        return self._left_child
+
+    @left_child.setter
+    def left_child(self, new_child):
+        self._left_child = new_child
+
+    @left_child.deleter
+    def left_child(self):
+        del self._left_child
+
+    @property
+    def right_child(self):
+        return self._right_child
+
+    @right_child.setter
+    def right_child(self, new_child):
+        self._right_child = new_child
+
+    @right_child.deleter
+    def right_child(self):
+        del self._right_child
 
     def __eq__(self, o):
         return id(self) == id(o)
+
+    def display(self):
+        pass
 
 class BeachLine():
     def __init__(self):
@@ -19,19 +42,19 @@ class BeachLine():
 
     def append(self, arc, directrix):
         if self.root is None:
-            self.root = BeachLineLeafNode(arc.site)
+            self.root = BeachLineLeafNode(arc.focus)
         else:
-            parent, closest_arc = self.find_closest_arc(arc.site, directrix)
+            parent, closest_arc = self.find_closest_arc(arc.focus, directrix)
             if closest_arc is not None:
                 new_internal_node = None
-                if closest_arc.site.x < arc.site.x:
-                    new_internal_node = BeachLineInternalNode(closest_arc.site, arc.site)
-                    new_internal_node.left_child = BeachLineLeafNode(closest_arc.site)
-                    new_internal_node.right_child = BeachLineLeafNode(arc.site)
-                elif closest_arc.site.x > arc.site.x:
-                    new_internal_node = BeachLineInternalNode(arc.site, closest_arc.site)
-                    new_internal_node.left_child = BeachLineLeafNode(arc.site)
-                    new_internal_node.right_child = BeachLineLeafNode(closest_arc.site)
+                if closest_arc.content.x < arc.focus.x:
+                    new_internal_node = BeachLineInternalNode(closest_arc.content, arc.focus)
+                    new_internal_node.left_child = BeachLineLeafNode(closest_arc.content)
+                    new_internal_node.right_child = BeachLineLeafNode(arc.focus)
+                elif closest_arc.content.x > arc.focus.x:
+                    new_internal_node = BeachLineInternalNode(arc.focus, closest_arc.content)
+                    new_internal_node.left_child = BeachLineLeafNode(arc.focus)
+                    new_internal_node.right_child = BeachLineLeafNode(closest_arc.content)
 
                 # Replace closestArc
                 if parent is not None:
@@ -70,8 +93,8 @@ class BeachLine():
             validate_tree(current_node, current_node.left_child)
             validate_tree(current_node, current_node.right_child)
 
-            if current_node.left_child is not BeachLineInternalNode \
-            and current_node.right_child is not BeachLineInternalNode:
+            if not isinstance(current_node.left_child, BeachLineInternalNode) \
+            and not isinstance(current_node.right_child, BeachLineInternalNode):
                 if current_node.left_child is None or current_node.right_child is None:
                     if parent_node.left_child == current_node:
                         parent_node.left_child = current_node
@@ -84,44 +107,79 @@ class BeachLine():
                         parent_node.right_child = current_node.left_child
 
     # Always returns an arc and its parent
-    def find_closest_arc(self, site, directrix):
-        def find_closest_arc(current_node, site, directrix):
-            if current_node is BeachLineInternalNode:
+    def find_closest_arc(self, focus, directrix):
+        def find_closest_arc(current_node, focus, directrix):
+            if isinstance(current_node, BeachLineInternalNode):
                 current_breakpoint = current_node.get_breakpoint(directrix)
-                if site.x < current_breakpoint.x:
-                    if current_node.left_child is BeachLineLeafNode:
+                if focus.x < current_breakpoint.x:
+                    if isinstance(current_node.left_child, BeachLineLeafNode):
                         return current_node, current_node.left_child
-                    elif current_node.left_child is BeachLineInternalNode:
-                        return find_closest_arc(current_node.left_child, site, directrix)
-                if site.x > current_breakpoint.x:
-                    if current_node.right_child is BeachLineLeafNode:
+                    elif isinstance(current_node.left_child, BeachLineInternalNode):
+                        return find_closest_arc(current_node.left_child, focus, directrix)
+                if focus.x > current_breakpoint.x:
+                    if isinstance(current_node.right_child, BeachLineLeafNode):
                         return current_node, current_node.right_child
-                    elif current_node.right_child is BeachLineInternalNode:
-                        return find_closest_arc(current_node, site, directrix)
-            elif current_node is BeachLineLeafNode:
+                    elif isinstance(current_node.right_child, BeachLineInternalNode):
+                        return find_closest_arc(current_node.right_child, focus, directrix)
+            elif isinstance(current_node, BeachLineLeafNode):
                 return None, current_node
             else:
                 return None, None
 
-        return find_closest_arc(self.root, site, directrix)
+        return find_closest_arc(self.root, focus, directrix)
+    
+    def display(self):
+        self.root.display()
 
 class BeachLineInternalNode(Node):
     def __init__(self, left_site, right_site):
-        Node.__init__(self, (left_site, right_site))
+        Node.__init__(self, [left_site, right_site])
 
-    @left_child.setter
+    @Node.left_child.setter
     def left_child(self, new_child):
-        self.left_child = new_child
-        self.content[0] = new_child
+        self._left_child = new_child
+        right_most_child_in_left_tree = new_child
+        while not isinstance(right_most_child_in_left_tree, BeachLineLeafNode):
+            right_most_child_in_left_tree = right_most_child_in_left_tree.right_child
+            
+        self.content[0] = right_most_child_in_left_tree.content
 
-    @right_child.setter
+    @Node.right_child.setter
     def right_child(self, new_child):
-        self.right_child = new_child
-        self.content[1] = new_child
+        self._right_child = new_child
+        left_most_child_in_right_tree = new_child
+        while not isinstance(left_most_child_in_right_tree, BeachLineLeafNode):
+            left_most_child_in_right_tree = left_most_child_in_right_tree.left_child
+            
+        self.content[1] = left_most_child_in_right_tree.content
 
     def get_breakpoint(self, directrix):
-        return Parabola.GetBreakpoint(self.content[0], self.content[1], directrix)
+        left_arc = self.left_child     # The right most arc in the subtree of the left child
+        while not isinstance(left_arc, BeachLineLeafNode):
+            left_arc = left_arc.right_child
+
+            if left_arc is None:
+                print("Left Arc is None")
+                return
+
+        right_arc = self.right_child
+        while not isinstance(right_arc, BeachLineLeafNode):
+            right_arc = right_arc.left_child
+
+            if right_arc is None:
+                print("Right Arc is None")
+                return
+
+        return Parabola.get_breakpoint(left_arc.content, right_arc.content, directrix)
+    
+    def display(self):
+        print("Internal (", self.content[0].ToString(), self.content[1].ToString(), ")")
+        self.left_child.display()
+        self.right_child.display()
 
 class BeachLineLeafNode(Node):
     def __init__(self, arc_site):
         Node.__init__(self, arc_site)
+
+    def display(self):
+        self.content.Print()

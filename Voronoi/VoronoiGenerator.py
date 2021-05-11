@@ -44,7 +44,7 @@ class VoronoiGenerator:
         while len(self.queue) > 0:
             self.handle_next_event()
 
-        self.complete_all_edges()
+        #self.complete_all_edges()
         return DCEL(self.vertices, self.edges, None)
 
     def handle_next_event(self):
@@ -58,15 +58,13 @@ class VoronoiGenerator:
             new_site = event.position
 
             self.beach_line.append(Arc(new_site), self.sweep_line)
-            self.insert_new_site(new_site)
+            self.beach_line.display()
+            print("***************")
+            #self.insert_new_site(new_site)
         elif event.type is EventType.VERTEX_EVENT:
             associated_arc = event.arc
 
-            Arc.remove(associated_arc.prev,
-                associated_arc,
-                associated_arc.next,
-                event.mid_point,
-                self.edges)
+            self.beach_line.remove_leaf_node(associated_arc)
 
             self.check_for_circle_events(associated_arc.prev, self.sweep_line)
             self.check_for_circle_events(associated_arc.next, self.sweep_line)
@@ -83,7 +81,6 @@ class VoronoiGenerator:
         return events
 
     def insert_new_site(self, _new_site):
-        curr_arc = self.root_arc
         while curr_arc is not None:
             intersection_point = self.get_lowest_intersection_point(_new_site, self.sweep_line)
 

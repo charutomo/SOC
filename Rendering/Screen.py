@@ -38,8 +38,9 @@ class Screen:
 
     def update(self):
         """Update Function"""
-        self.voronoi_painter.draw_voronoi()
+        #self.voronoi_painter.draw_voronoi()
 
+        
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT or \
@@ -51,7 +52,7 @@ class Screen:
                         self.voronoi_painter.next()
                     if event.key == pygame.K_LEFT or event.key == pygame.K_DOWN:
                         self.voronoi_painter.prev()
-
+            
             pygame.display.update()
             self.clock.tick(60)
 
@@ -64,15 +65,15 @@ class VoronoiPainter:
     def progress(self):
         self.voronoi_generator.handle_next_event()
         self.states.append([
-            copy.copy(self.voronoi_generator.root_arc),
+            copy.copy(self.voronoi_generator.beach_line),
             copy.copy(self.voronoi_generator.edges),
             copy.copy(self.voronoi_generator.vertices),
             self.voronoi_generator.sweep_line + Settings.SWEEP_LINE_OFFSET])
 
     def complete(self):
-        self.voronoi_generator.complete_all_edges()
+        #self.voronoi_generator.complete_all_edges()
         self.states.append([
-            copy.copy(self.voronoi_generator.root_arc),
+            copy.copy(self.voronoi_generator.beach_line),
             copy.copy(self.voronoi_generator.edges),
             copy.copy(self.voronoi_generator.vertices),
             self.voronoi_generator.sweep_line + Settings.SWEEP_LINE_OFFSET])
