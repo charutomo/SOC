@@ -56,10 +56,18 @@ class VoronoiGenerator:
 
         if event.type is EventType.SITE_EVENT:
             new_site = event.position
+            new_arc = Arc(new_site)
+            self.beach_line.append(new_arc, self.sweep_line)
 
-            self.beach_line.append(Arc(new_site), self.sweep_line)
             self.beach_line.display()
             print("***************")
+
+            adjacent_arcs = self.beach_line.get_adjacent_arcs(new_arc)
+
+            self.check_for_circle_events(new_arc, self.sweep_line)
+            for a in adjacent_arcs:
+                self.check_for_circle_events(a, self.sweep_line)
+
             #self.insert_new_site(new_site)
         elif event.type is EventType.VERTEX_EVENT:
             associated_arc = event.arc

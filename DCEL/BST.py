@@ -30,6 +30,12 @@ class Node():
     def right_child(self):
         del self._right_child
 
+    def get_largest_child(self):
+        pass
+
+    def get_smallest_child(self):
+        pass
+
     def __eq__(self, o):
         return id(self) == id(o)
 
@@ -67,6 +73,8 @@ class BeachLine():
                     self.root = new_internal_node
             else:
                 print("Closest Arc not Found.")
+
+    def find_arc(self, arc):
 
     def remove_leaf_node(self, leaf_node):
         def remove_leaf_node(current_node, leaf_node):
@@ -128,6 +136,23 @@ class BeachLine():
 
         return find_closest_arc(self.root, focus, directrix)
     
+    def get_adjacent_arcs(self, arc):
+        def get_adjacent_arcs(current_node, arc):
+            adjacent_arcs = []
+            if isinstance(current_node.right_child, BeachLineLeafNode):
+                if current_node.right_child.content == arc.focus:
+                    adjacent_arcs.append(current_node.left_child.get_largest_child())
+            else:
+                adjacent_arcs.extend(get_adjacent_arcs(current_node.right_child, arc))
+            if isinstance(current_node.left_child, BeachLineLeafNode):
+                if current_node.left_child.content == arc.focus:
+                    adjacent_arcs.append(current_node.right_child.get_smallest_child())
+            else:
+                adjacent_arcs.extend(get_adjacent_arcs(current_node.left_child, arc))
+
+            return adjacent_arcs
+        return get_adjacent_arcs(self.root, arc)
+
     def display(self):
         self.root.display()
 
@@ -138,40 +163,41 @@ class BeachLineInternalNode(Node):
     @Node.left_child.setter
     def left_child(self, new_child):
         self._left_child = new_child
-        right_most_child_in_left_tree = new_child
-        while not isinstance(right_most_child_in_left_tree, BeachLineLeafNode):
-            right_most_child_in_left_tree = right_most_child_in_left_tree.right_child
-            
-        self.content[0] = right_most_child_in_left_tree.content
+        self.content[0] = new_child.get_largest_child()
 
     @Node.right_child.setter
     def right_child(self, new_child):
         self._right_child = new_child
-        left_most_child_in_right_tree = new_child
-        while not isinstance(left_most_child_in_right_tree, BeachLineLeafNode):
-            left_most_child_in_right_tree = left_most_child_in_right_tree.left_child
-            
-        self.content[1] = left_most_child_in_right_tree.content
+        self.content[1] = new_child.get_smallest_child()
 
     def get_breakpoint(self, directrix):
-        left_arc = self.left_child     # The right most arc in the subtree of the left child
-        while not isinstance(left_arc, BeachLineLeafNode):
-            left_arc = left_arc.right_child
-
-            if left_arc is None:
-                print("Left Arc is None")
-                return
-
-        right_arc = self.right_child
-        while not isinstance(right_arc, BeachLineLeafNode):
-            right_arc = right_arc.left_child
-
-            if right_arc is None:
-                print("Right Arc is None")
-                return
+        left_arc = self.get_largest_child()
+        right_arc = self.get_smallest_child()
 
         return Parabola.get_breakpoint(left_arc.content, right_arc.content, directrix)
-    
+
+    def get_largest_child(self):
+        current_node = self
+        while not isinstance(current_node, BeachLineLeafNode):
+            current_node = current_node.right_child
+
+            if current_node is None:
+                print("Largest node is None")
+                return
+
+        return current_node
+
+    def get_smallest_child(self):
+        current_node = self
+        while not isinstance(current_node, BeachLineLeafNode):
+            current_node = current_node.left_child
+
+            if current_node is None:
+                print("Smallest node is None")
+                return
+
+        return current_node
+
     def display(self):
         print("Internal (", self.content[0].ToString(), self.content[1].ToString(), ")")
         self.left_child.display()
@@ -180,6 +206,12 @@ class BeachLineInternalNode(Node):
 class BeachLineLeafNode(Node):
     def __init__(self, arc_site):
         Node.__init__(self, arc_site)
+
+    def get_largest_child(self):
+        return self
+
+    def get_smallest_child(self):
+        return self
 
     def display(self):
         self.content.Print()
