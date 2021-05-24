@@ -19,13 +19,20 @@ We are working on Space Optimisation: A qualitative project on how to isolate pa
 
 
 ## Content of Repository
-Listed below are the current main features of `SOC`:<br/>
+Listed below are the current main features of `SOC`<br/>
 <br/>
-
+<details>
+  <summary>Click here to expand!</summary>
+  
+  
 * [README.MD](https://github.com/charutomo/SOC/blob/main/README.md)
+  
 * [License](https://github.com/charutomo/SOC/blob/main/LICENSE)
+  
 * [Main](https://github.com/charutomo/SOC/blob/main/main.py)
+  
 * [Settings](https://github.com/charutomo/SOC/blob/main/Settings.py)
+  
 * [Voronoi](https://github.com/charutomo/SOC/tree/main/Voronoi)
     * [VoronoiEvent](https://github.com/charutomo/SOC/blob/main/Voronoi/VoronoiEvent.py)
     * [VoronoiGenerator](https://github.com/charutomo/SOC/blob/main/Voronoi/VoronoiGenerator.py)
@@ -44,9 +51,9 @@ Listed below are the current main features of `SOC`:<br/>
     * [DCEL](https://github.com/charutomo/SOC/blob/main/DCEL/DCEL.py)
 
 * [Report and Slides](https://github.com/charutomo/SOC/tree/main/Report%20and%20Slides)
-    * [Report](https://github.com/charutomo/SOC/blob/main/Report%20and%20Slides/Report%20SOC.pdf)
+    * [Report](https://github.com/charutomo/SOC/tree/main/Report%20and%20Slides/Report)
     * [Slides](https://github.com/charutomo/SOC/blob/main/Report%20and%20Slides/Slides%20SOC.pdf)
-
+</details>
 <br/>
 
 
